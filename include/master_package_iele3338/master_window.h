@@ -50,12 +50,13 @@ public:
     virtual ~MasterWindow();
     
 private:
-    QGridLayout *mainLayout, *titleLayout, *configurationLayout, *readyLayout, *infoLayout, *testLayout;
+    QGridLayout *mainLayout, *configurationLayout, *readyLayout, *infoLayout, *testLayout;
     QPushButton *startTestButton, *loadConfigFileButton;
-    QLabel *appNameLabel, *groupNumberLabel, *startPointLabel, *goalPointLabel, *obstaclesLabel;
+    QLabel *appNameLabel, *groupNumberLabel, *startPointLabel, *goalPointLabel, *obstaclesLabel, *masterIpAddressLabel, *robotIpAddressLabel;
     QComboBox *groupNumberComboBox, *startPointComboBox, *goalPointComboBox;
     QListWidget *obstacleList;
     QPlainTextEdit *console;
+    QCheckBox *readyCheckBox;
     ros_thread *rosSpinThread;
     master_package_iele3338::Obstacle obstacleExample;
     master_package_iele3338::Covariance covarianceExample;

@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
     QDesktopWidget dw;
-    int x_window=dw.width()*0.3;
+    int x_window=dw.width()*0.15;
     int y_window=dw.height()*0.9;
     MasterWindow masterWindow(x_window, y_window);
     masterWindow.setGeometry(

@@ -27,15 +27,13 @@ MasterWindow::MasterWindow(int xw, int yw)
     ros::init(argc, argv, "master_node");
     
     //Objects allocation
-    QWidget *window = new QWidget();
+    QWidget *window = new QWidget();    
     mainLayout = new QGridLayout();
-    titleLayout = new QGridLayout();
     configurationLayout = new QGridLayout();
     readyLayout = new QGridLayout();
     infoLayout = new QGridLayout();
     testLayout = new QGridLayout();
     rosSpinThread = new ros_thread();
-    startTestButton = new QPushButton("Start");
     loadConfigFileButton = new QPushButton("Load Configuration File");
     appNameLabel = new QLabel("Master Node (IELE3338)");
     groupNumberLabel = new QLabel("Group Number:");
@@ -46,17 +44,26 @@ MasterWindow::MasterWindow(int xw, int yw)
     startPointComboBox = new QComboBox();
     goalPointComboBox = new QComboBox();
     obstacleList = new QListWidget();
-    //console = new QPlainTextEdit();
+    readyCheckBox = new QCheckBox("Master Ready");
+    startTestButton = new QPushButton("Start");
+    masterIpAddressLabel = new QLabel("Master IP Address");
+    robotIpAddressLabel = new QLabel("Robot IP Adress");
+    console = new QPlainTextEdit();
+    
+    //Central Widget
+    setCentralWidget(window);
+    window->setLayout(mainLayout);
+    window->setFixedSize(QSize(xw, yw));
+    setWindowTitle("Basic Robot Motion Application");
+    
     
     //Add widgets to Main Layout 
-    mainLayout->addLayout(titleLayout, 0, 0);
+    mainLayout->addWidget(appNameLabel, 0, 0);
     mainLayout->addLayout(configurationLayout, 1, 0);
     mainLayout->addLayout(readyLayout, 2, 0);
     mainLayout->addLayout(infoLayout, 3, 0);
-    mainLayout->addLayout(testLayout, 4, 0);
-    
-    //Add widgets to Title Layout
-    titleLayout->addWidget(appNameLabel, 0, 0);
+    mainLayout->addWidget(console, 4, 0);
+    mainLayout->addLayout(testLayout, 5, 0);
     
     //Add widgets to Configuration Layout
     configurationLayout->addWidget(groupNumberLabel, 0, 0);
@@ -66,22 +73,38 @@ MasterWindow::MasterWindow(int xw, int yw)
     configurationLayout->addWidget(goalPointLabel, 2, 0);
     configurationLayout->addWidget(goalPointComboBox, 2, 1);
     configurationLayout->addWidget(obstaclesLabel, 3, 0);
-    configurationLayout->addWidget(obstacleList, 4, 0);
+    configurationLayout->addWidget(obstacleList, 3, 1);
+    obstacleList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    
+    
+    obstacleList->setFixedSize(QSize(0.75*xw, 0.3*yw));
+    obstacleList->addItem("Test1");
+    obstacleList->addItem("Test2");
     
     //Add widgets to Ready Layout
+    readyLayout->addWidget(readyCheckBox, 0, 0);
+    readyLayout->addWidget(startTestButton, 0, 1);
     
     //Add widgets to Info Layout
-    
+    infoLayout->addWidget(masterIpAddressLabel, 0, 0);
+    infoLayout->addWidget(robotIpAddressLabel, 0, 1);
+
     //Add widgets to Test Layout
     
     //Objects initialization
-    window->setLayout(mainLayout);
-    setCentralWidget(window);
-    window->setFixedSize(xw,yw);
-    setWindowTitle("Basic Robot Motion Application");
-    
     startTestButton->setEnabled(false);
+    startTestButton->setFixedSize(QSize(0.75*xw, 30));
     loadConfigFileButton->setEnabled(true);
+    QPalette p = console->palette();
+    p.setColor(QPalette::Base, QColor(0, 0, 0));
+    p.setColor(QPalette::Text, Qt::white);
+    console->setPalette(p);
+    console->setEnabled(false);
+    console->setMaximumBlockCount(10);
+    appNameLabel->setAlignment(Qt::AlignCenter);
+    QFont f("Arial",16);
+    QFontMetrics fm(f);
+    appNameLabel->setFont(f); 
     rosSpinThread->start();
     
     //Obstacle Example
