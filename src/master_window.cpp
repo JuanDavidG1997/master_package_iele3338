@@ -27,7 +27,7 @@ MasterWindow::MasterWindow()
     ros::init(argc, argv, "master_node");
     QLabel* label = new QLabel( this );
     label->setText( "Hello World!" );
-    this->setWindowTitle(tr("Hello World example"));
+    this->setWindowTitle(tr("Master Node"));
     rosSpinThread = new ros_thread();
     rosSpinThread->start();
 }

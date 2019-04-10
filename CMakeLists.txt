@@ -39,5 +39,5 @@ set(MASTER-PACKAGE-IELE3338-HDRS
 
 qt5_wrap_cpp(MASTER-PACKAGE-IELE3338-MOCS ${MASTER-PACKAGE-IELE3338-HDRS})
 
-add_executable(master_package_iele3338 ${MASTER-PACKAGE-IELE3338-SRCS} ${MASTER-PACKAGE-IELE3338-HDRS})
-target_link_libraries(master_package_iele3338 Qt5::Widgets ${catkin_LIBRARIES})
+add_executable(master_node ${MASTER-PACKAGE-IELE3338-SRCS} ${MASTER-PACKAGE-IELE3338-HDRS})
+target_link_libraries(master_node Qt5::Widgets ${catkin_LIBRARIES})
