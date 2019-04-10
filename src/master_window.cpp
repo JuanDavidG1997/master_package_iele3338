@@ -30,9 +30,20 @@ MasterWindow::MasterWindow()
     this->setWindowTitle(tr("Master Node"));
     rosSpinThread = new ros_thread();
     rosSpinThread->start();
+    
     obstacleExample.position.position.x = 10;
     obstacleExample.position.position.y = 10;
     obstacleExample.radius = 2;
+    
+    covarianceExample.sigma11 = 1.0;
+    covarianceExample.sigma12 = 1.0;
+    covarianceExample.sigma13 = 1.0;
+    covarianceExample.sigma21 = 1.0;
+    covarianceExample.sigma22 = 1.0;
+    covarianceExample.sigma23 = 1.0;
+    covarianceExample.sigma31 = 1.0;
+    covarianceExample.sigma32 = 1.0;
+    covarianceExample.sigma33 = 1.0;
 }
 
 MasterWindow::~MasterWindow()

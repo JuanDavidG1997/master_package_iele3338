@@ -27,6 +27,7 @@
 #include "ros/ros.h"
 #include "master_package_iele3338/ros_thread.h"
 #include "master_package_iele3338/Obstacle.h"
+#include "master_package_iele3338/Covariance.h"
 
 
 class MainWindow;
@@ -41,6 +42,7 @@ public:
 private:
     ros_thread *rosSpinThread;
     master_package_iele3338::Obstacle obstacleExample;
+    master_package_iele3338::Covariance covarianceExample;
 };
 
 #endif
