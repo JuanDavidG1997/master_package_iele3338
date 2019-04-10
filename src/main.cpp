@@ -19,13 +19,23 @@
  */
 
 #include <QApplication>
+#include <QStyle>
+#include <QDesktopWidget>
 #include "master_package_iele3338/master_window.h"
 
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
-    MasterWindow masterwindow;
-    masterwindow.show();
+    MasterWindow masterWindow;
+    masterWindow.setGeometry(
+    QStyle::alignedRect(
+        Qt::LeftToRight,
+        Qt::AlignCenter,
+        masterWindow.size(),
+        qApp->desktop()->availableGeometry()
+  )
+);
+    masterWindow.show();
     return app.exec();
 }

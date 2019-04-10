@@ -30,6 +30,9 @@ MasterWindow::MasterWindow()
     this->setWindowTitle(tr("Master Node"));
     rosSpinThread = new ros_thread();
     rosSpinThread->start();
+    obstacleExample.position.position.x = 10;
+    obstacleExample.position.position.y = 10;
+    obstacleExample.radius = 2;
 }
 
 MasterWindow::~MasterWindow()

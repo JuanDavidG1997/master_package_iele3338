@@ -26,6 +26,7 @@
 #include "ros/package.h"
 #include "ros/ros.h"
 #include "master_package_iele3338/ros_thread.h"
+#include "master_package_iele3338/Obstacle.h"
 
 
 class MainWindow;
@@ -39,6 +40,7 @@ public:
     
 private:
     ros_thread *rosSpinThread;
+    master_package_iele3338::Obstacle obstacleExample;
 };
 
 #endif

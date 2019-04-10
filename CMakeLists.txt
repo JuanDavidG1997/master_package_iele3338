@@ -1,23 +1,33 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(master_package_iele3338)
 
-set (CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 set(Qt5Widgets_DIR "/usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets")
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
-  std_msgs
+  roslib
+  geometry_msgs
+  message_generation
   Qt5Widgets
   Qt5Gui
   Qt5Core
 )
 
-list(APPEND libs Qt5::Multimedia)
+add_message_files(
+  FILES
+  Obstacle.msg
+)
+
+generate_messages(
+  DEPENDENCIES 
+  geometry_msgs
+)
 
 catkin_package(
-   CATKIN_DEPENDS roscpp rospy std_msgs
+   CATKIN_DEPENDS roscpp rospy geometry_msgs message_runtime
    DEPENDS Qt5Widgets Qt5Gui Qt5Core
 )
 
