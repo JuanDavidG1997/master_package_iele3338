@@ -21,8 +21,18 @@
 #ifndef master_window_H
 #define master_window_H
 
+#include <QMainWindow>
 #include <QWidget>
 #include <QLabel>
+#include <QPushButton>
+#include <QGridLayout>
+#include <QDesktopWidget>
+#include <QPlainTextEdit>
+#include <QTimer>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QListWidget>
 #include "ros/package.h"
 #include "ros/ros.h"
 #include "master_package_iele3338/ros_thread.h"
@@ -31,15 +41,21 @@
 
 
 class MainWindow;
-class MasterWindow : public QWidget
+class MasterWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MasterWindow();
+    MasterWindow(int xw, int yw);
     virtual ~MasterWindow();
     
 private:
+    QGridLayout *mainLayout, *titleLayout, *configurationLayout, *readyLayout, *infoLayout, *testLayout;
+    QPushButton *startTestButton, *loadConfigFileButton;
+    QLabel *appNameLabel, *groupNumberLabel, *startPointLabel, *goalPointLabel, *obstaclesLabel;
+    QComboBox *groupNumberComboBox, *startPointComboBox, *goalPointComboBox;
+    QListWidget *obstacleList;
+    QPlainTextEdit *console;
     ros_thread *rosSpinThread;
     master_package_iele3338::Obstacle obstacleExample;
     master_package_iele3338::Covariance covarianceExample;

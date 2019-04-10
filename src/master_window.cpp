@@ -20,17 +20,71 @@
 
 #include "master_package_iele3338/master_window.h"
 
-MasterWindow::MasterWindow()
+MasterWindow::MasterWindow(int xw, int yw)
 {
     char **argv;
     int argc = 0;  
     ros::init(argc, argv, "master_node");
-    QLabel* label = new QLabel( this );
-    label->setText( "Hello World!" );
-    this->setWindowTitle(tr("Master Node"));
+    
+    //Objects allocation
+    QWidget *window = new QWidget();
+    mainLayout = new QGridLayout();
+    titleLayout = new QGridLayout();
+    configurationLayout = new QGridLayout();
+    readyLayout = new QGridLayout();
+    infoLayout = new QGridLayout();
+    testLayout = new QGridLayout();
     rosSpinThread = new ros_thread();
+    startTestButton = new QPushButton("Start");
+    loadConfigFileButton = new QPushButton("Load Configuration File");
+    appNameLabel = new QLabel("Master Node (IELE3338)");
+    groupNumberLabel = new QLabel("Group Number:");
+    startPointLabel = new QLabel("Start Point:");
+    goalPointLabel = new QLabel("Goal Point:");
+    obstaclesLabel = new QLabel("Obstacles:");
+    groupNumberComboBox = new QComboBox();
+    startPointComboBox = new QComboBox();
+    goalPointComboBox = new QComboBox();
+    obstacleList = new QListWidget();
+    //console = new QPlainTextEdit();
+    
+    //Add widgets to Main Layout 
+    mainLayout->addLayout(titleLayout, 0, 0);
+    mainLayout->addLayout(configurationLayout, 1, 0);
+    mainLayout->addLayout(readyLayout, 2, 0);
+    mainLayout->addLayout(infoLayout, 3, 0);
+    mainLayout->addLayout(testLayout, 4, 0);
+    
+    //Add widgets to Title Layout
+    titleLayout->addWidget(appNameLabel, 0, 0);
+    
+    //Add widgets to Configuration Layout
+    configurationLayout->addWidget(groupNumberLabel, 0, 0);
+    configurationLayout->addWidget(groupNumberComboBox, 0, 1);
+    configurationLayout->addWidget(startPointLabel, 1, 0);
+    configurationLayout->addWidget(startPointComboBox, 1, 1);
+    configurationLayout->addWidget(goalPointLabel, 2, 0);
+    configurationLayout->addWidget(goalPointComboBox, 2, 1);
+    configurationLayout->addWidget(obstaclesLabel, 3, 0);
+    configurationLayout->addWidget(obstacleList, 4, 0);
+    
+    //Add widgets to Ready Layout
+    
+    //Add widgets to Info Layout
+    
+    //Add widgets to Test Layout
+    
+    //Objects initialization
+    window->setLayout(mainLayout);
+    setCentralWidget(window);
+    window->setFixedSize(xw,yw);
+    setWindowTitle("Basic Robot Motion Application");
+    
+    startTestButton->setEnabled(false);
+    loadConfigFileButton->setEnabled(true);
     rosSpinThread->start();
     
+    //Obstacle Example
     obstacleExample.position.position.x = 10;
     obstacleExample.position.position.y = 10;
     obstacleExample.radius = 2;
