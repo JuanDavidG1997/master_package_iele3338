@@ -22,6 +22,11 @@ add_message_files(
   Covariance.msg
 )
 
+add_service_files(
+  FILES
+  AckService.srv
+)
+
 generate_messages(
   DEPENDENCIES 
   geometry_msgs

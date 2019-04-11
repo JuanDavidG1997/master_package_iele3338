@@ -30,5 +30,17 @@ ros_thread::~ros_thread()
 
 void ros_thread::run()
 {
+    ros::NodeHandle n;
+    ros::ServiceServer service = n.advertiseService("ack_service", &ros_thread::AckService_callback, this);
     ros::spin();
+}
+
+
+bool ros_thread::AckService_callback(master_package_iele3338::AckService::Request  &req,
+				     master_package_iele3338::AckService::Response &res)
+{
+    res.state = 1;
+    ROS_INFO("Request: Group number = %d, IP = %s", (int)req.group_number, ((std::string)req.ip_address).c_str());
+    ROS_INFO("Response: State = %ld", (long int)res.state);
+    return true;
 }
