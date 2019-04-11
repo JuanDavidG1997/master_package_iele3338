@@ -31,7 +31,8 @@ ros_thread::~ros_thread()
 void ros_thread::run()
 {
     ros::NodeHandle n;
-    ros::ServiceServer service = n.advertiseService("ack_service", &ros_thread::AckService_callback, this);
+    ros::ServiceServer service_ack = n.advertiseService("ack_service", &ros_thread::AckService_callback, this);
+    ros::ServiceServer service_end = n.advertiseService("end_service", &ros_thread::EndService_callback, this);
     ros::spin();
 }
 
@@ -41,6 +42,23 @@ bool ros_thread::AckService_callback(master_package_iele3338::AckService::Reques
 {
     res.state = 1;
     ROS_INFO("Request: Group number = %d, IP = %s", (int)req.group_number, ((std::string)req.ip_address).c_str());
-    ROS_INFO("Response: State = %ld", (long int)res.state);
+    ROS_INFO("Response: State = %d", (int)res.state);
+    return true;
+}
+
+bool ros_thread::EndService_callback(master_package_iele3338::EndService::Request  &req,
+				     master_package_iele3338::EndService::Response &res)
+{
+    if ((int)req.password == 1234) 
+    {
+      res.correct = 1;
+    }
+    else
+    {
+      res.correct = 0;
+    }
+    
+    ROS_INFO("Request: Password = %d", (int)req.password);
+    ROS_INFO("Response: Correct = %d", (int)res.correct);
     return true;
 }
