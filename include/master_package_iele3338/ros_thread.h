@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QThread>
 #include "ros/ros.h"
+#include "master_package_iele3338/AckService.h"
 
 class ros_thread : public QThread
 {
@@ -35,6 +36,8 @@ public:
   void run();
 
 private:
+  bool AckService_callback(master_package_iele3338::AckService::Request  &req,
+			   master_package_iele3338::AckService::Response &res);
 };
 
 #endif // ROS_THREAD_H

@@ -1,0 +1,6 @@
+#request fields
+int32 group_number
+string ip_address
+---
+#response fields
+int32 state
