@@ -26,10 +26,11 @@ add_service_files(
   FILES
   AckService.srv
   EndService.srv
+  StartService.srv
 )
 
 generate_messages(
-  DEPENDENCIES 
+  DEPENDENCIES
   geometry_msgs
 )
 
@@ -57,4 +58,5 @@ set(MASTER-PACKAGE-IELE3338-HDRS
 qt5_wrap_cpp(MASTER-PACKAGE-IELE3338-MOCS ${MASTER-PACKAGE-IELE3338-HDRS})
 
 add_executable(master_node ${MASTER-PACKAGE-IELE3338-SRCS} ${MASTER-PACKAGE-IELE3338-HDRS})
+add_dependencies(master_node ${master_package_iele3338_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(master_node Qt5::Widgets ${catkin_LIBRARIES})

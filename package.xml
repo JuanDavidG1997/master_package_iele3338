@@ -4,6 +4,8 @@
   <version>0.0.0</version>
   <description>The package for the master node in the IELE338 Robotic course for 20191 at Universidad de los Andes</description>
   <maintainer email="quintero.carlos@uniandes.edu.co">Carlos Quintero</maintainer>
+  <maintainer email="oa.diaz10@uniandes.edu.co">Óscar Díaz</maintainer>
+  <maintainer email="js.moral@uniandes.edu.co">Jorge Mora</maintainer>
 
   <license>GVLP3</license>
 

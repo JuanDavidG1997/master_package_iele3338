@@ -22,6 +22,9 @@
 
 ros_thread::ros_thread()
 {
+    service_ack = n.advertiseService("ack_service", &ros_thread::AckService_callback, this);
+    service_end = n.advertiseService("end_service", &ros_thread::EndService_callback, this);
+    service_start = n.advertiseService("start_service", &ros_thread::StartService_callback, this);    
 }
 
 ros_thread::~ros_thread()
@@ -30,9 +33,6 @@ ros_thread::~ros_thread()
 
 void ros_thread::run()
 {
-    ros::NodeHandle n;
-    ros::ServiceServer service_ack = n.advertiseService("ack_service", &ros_thread::AckService_callback, this);
-    ros::ServiceServer service_end = n.advertiseService("end_service", &ros_thread::EndService_callback, this);
     ros::spin();
 }
 
@@ -60,5 +60,41 @@ bool ros_thread::EndService_callback(master_package_iele3338::EndService::Reques
     
     ROS_INFO("Request: Password = %d", (int)req.password);
     ROS_INFO("Response: Correct = %d", (int)res.correct);
+    return true;
+}
+
+bool ros_thread::StartService_callback(master_package_iele3338::StartService::Request  &req,
+				     master_package_iele3338::StartService::Response &res)
+{
+    geometry_msgs::Pose startPoint, goalPoint;
+    int numberObstacles = 3;
+    master_package_iele3338::Obstacle obsArray[3];
+    startPoint.position.x = 0;
+    startPoint.position.y = 0;
+    startPoint.orientation.w = 0;
+    goalPoint.position.x = 1;
+    goalPoint.position.y = 1;
+    goalPoint.orientation.w = 1;
+    obsArray[0].position.position.x = 1;
+    obsArray[0].position.position.y = 1;
+    obsArray[0].radius = 5;
+    obsArray[1].position.position.x = 1;
+    obsArray[1].position.position.y = 1;
+    obsArray[1].radius = 5;
+    obsArray[2].position.position.x = 3;
+    obsArray[2].position.position.y = 3;
+    obsArray[2].radius = 5;
+    
+    res.start = startPoint;
+    res.goal = goalPoint;
+    res.n_obstacles = numberObstacles;
+    res.obstacles.resize(numberObstacles);
+    res.obstacles[0] = obsArray[0];
+    res.obstacles[1] = obsArray[1];
+    res.obstacles[2] = obsArray[2];
+    
+    ROS_INFO("Response: Start Point x = %f, y = %f, theta = %f", (double)res.start.position.x, (double)res.start.position.y, (double)res.start.orientation.w);
+    ROS_INFO("Response: Goal Point x = %f, y = %f, theta = %f", (double)res.goal.position.x, (double)res.goal.position.y, (double)res.goal.orientation.w);
+    ROS_INFO("Response: Number of Obstacles = %d", (int)res.n_obstacles);
     return true;
 }
