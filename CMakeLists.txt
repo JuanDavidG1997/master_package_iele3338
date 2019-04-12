@@ -25,6 +25,7 @@ add_message_files(
 add_service_files(
   FILES
   AckService.srv
+  EndService.srv
 )
 
 generate_messages(
