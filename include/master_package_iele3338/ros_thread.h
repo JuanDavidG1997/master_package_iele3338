@@ -24,9 +24,9 @@
 #include <QObject>
 #include <QThread>
 #include "ros/ros.h"
-#include "master_package_iele3338/AckService.h"
-#include "master_package_iele3338/EndService.h"
-#include "master_package_iele3338/StartService.h"
+#include "master_msgs_iele3338/AckService.h"
+#include "master_msgs_iele3338/EndService.h"
+#include "master_msgs_iele3338/StartService.h"
 #include "geometry_msgs/Pose.h"
 
 class ros_thread : public QThread
@@ -39,12 +39,12 @@ public:
   void run();
 
 private:
-  bool AckService_callback(master_package_iele3338::AckService::Request  &req,
-			   master_package_iele3338::AckService::Response &res);
-  bool EndService_callback(master_package_iele3338::EndService::Request  &req,
-			   master_package_iele3338::EndService::Response &res);
-  bool StartService_callback(master_package_iele3338::StartService::Request  &req,
-			   master_package_iele3338::StartService::Response &res);
+  bool AckService_callback(master_msgs_iele3338::AckService::Request  &req,
+			   master_msgs_iele3338::AckService::Response &res);
+  bool EndService_callback(master_msgs_iele3338::EndService::Request  &req,
+			   master_msgs_iele3338::EndService::Response &res);
+  bool StartService_callback(master_msgs_iele3338::StartService::Request  &req,
+			   master_msgs_iele3338::StartService::Response &res);
   
   ros::NodeHandle n;
   ros::ServiceServer service_ack;

@@ -37,8 +37,8 @@ void ros_thread::run()
 }
 
 
-bool ros_thread::AckService_callback(master_package_iele3338::AckService::Request  &req,
-				     master_package_iele3338::AckService::Response &res)
+bool ros_thread::AckService_callback(master_msgs_iele3338::AckService::Request  &req,
+				     master_msgs_iele3338::AckService::Response &res)
 {
     res.state = 1;
     ROS_INFO("Request: Group number = %d, IP = %s", (int)req.group_number, ((std::string)req.ip_address).c_str());
@@ -46,8 +46,8 @@ bool ros_thread::AckService_callback(master_package_iele3338::AckService::Reques
     return true;
 }
 
-bool ros_thread::EndService_callback(master_package_iele3338::EndService::Request  &req,
-				     master_package_iele3338::EndService::Response &res)
+bool ros_thread::EndService_callback(master_msgs_iele3338::EndService::Request  &req,
+				     master_msgs_iele3338::EndService::Response &res)
 {
     if ((int)req.password == 1234) 
     {
@@ -63,12 +63,12 @@ bool ros_thread::EndService_callback(master_package_iele3338::EndService::Reques
     return true;
 }
 
-bool ros_thread::StartService_callback(master_package_iele3338::StartService::Request  &req,
-				     master_package_iele3338::StartService::Response &res)
+bool ros_thread::StartService_callback(master_msgs_iele3338::StartService::Request  &req,
+				     master_msgs_iele3338::StartService::Response &res)
 {
     geometry_msgs::Pose startPoint, goalPoint;
     int numberObstacles = 3;
-    master_package_iele3338::Obstacle obsArray[3];
+    master_msgs_iele3338::Obstacle obsArray[3];
     startPoint.position.x = 0;
     startPoint.position.y = 0;
     startPoint.orientation.w = 0;

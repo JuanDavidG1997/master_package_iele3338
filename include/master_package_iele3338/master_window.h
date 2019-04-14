@@ -36,8 +36,8 @@
 #include "ros/package.h"
 #include "ros/ros.h"
 #include "master_package_iele3338/ros_thread.h"
-#include "master_package_iele3338/Obstacle.h"
-#include "master_package_iele3338/Covariance.h"
+#include "master_msgs_iele3338/Obstacle.h"
+#include "master_msgs_iele3338/Covariance.h"
 
 
 class MainWindow;
@@ -58,8 +58,8 @@ private:
     QPlainTextEdit *console;
     QCheckBox *readyCheckBox;
     ros_thread *rosSpinThread;
-    master_package_iele3338::Obstacle obstacleExample;
-    master_package_iele3338::Covariance covarianceExample;
+    master_msgs_iele3338::Obstacle obstacleExample;
+    master_msgs_iele3338::Covariance covarianceExample;
 };
 
 #endif

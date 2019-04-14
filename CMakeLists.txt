@@ -10,32 +10,20 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   roslib
   geometry_msgs
-  message_generation
+  master_msgs_iele3338
   Qt5Widgets
   Qt5Gui
   Qt5Core
 )
 
-add_message_files(
-  FILES
-  Obstacle.msg
-  Covariance.msg
-)
-
-add_service_files(
-  FILES
-  AckService.srv
-  EndService.srv
-  StartService.srv
-)
-
 generate_messages(
   DEPENDENCIES
   geometry_msgs
+  master_msgs_iele3338
 )
 
 catkin_package(
-   CATKIN_DEPENDS roscpp rospy geometry_msgs message_runtime
+   CATKIN_DEPENDS roscpp rospy geometry_msgs message_runtime master_msgs_iele3338
    DEPENDS Qt5Widgets Qt5Gui Qt5Core
 )
 
