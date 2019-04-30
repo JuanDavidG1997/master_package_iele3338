@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include <QThread>
+#include <QVector>
 #include "ros/ros.h"
 #include "master_msgs_iele3338/AckService.h"
 #include "master_msgs_iele3338/EndService.h"
@@ -43,13 +44,15 @@ private:
 			   master_msgs_iele3338::AckService::Response &res);
   bool EndService_callback(master_msgs_iele3338::EndService::Request  &req,
 			   master_msgs_iele3338::EndService::Response &res);
-  bool StartService_callback(master_msgs_iele3338::StartService::Request  &req,
-			   master_msgs_iele3338::StartService::Response &res);
   
   ros::NodeHandle n;
   ros::ServiceServer service_ack;
   ros::ServiceServer service_end;
-  ros::ServiceServer service_start;
+  ros::ServiceClient start_client;
+  master_msgs_iele3338::StartService srv;
+  
+private slots:
+  void startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs::Pose goalPoint, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);
 };
 
 #endif // ROS_THREAD_H

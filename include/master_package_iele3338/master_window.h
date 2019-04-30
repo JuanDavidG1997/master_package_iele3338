@@ -33,12 +33,18 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QListWidget>
+#include <QVector>
+#include <QFile>
+#include <QTextStream>
+#include <QStringList>
+#include <iostream>
 #include "ros/package.h"
 #include "ros/ros.h"
 #include "master_package_iele3338/ros_thread.h"
 #include "master_msgs_iele3338/Obstacle.h"
 #include "master_msgs_iele3338/Covariance.h"
 
+using namespace std;
 
 class MainWindow;
 class MasterWindow : public QMainWindow
@@ -58,8 +64,26 @@ private:
     QPlainTextEdit *console;
     QCheckBox *readyCheckBox;
     ros_thread *rosSpinThread;
+    QFile *configurationFile;
+    int numberOfGroups, numberObstacles, numberOfStartPoints, numberOfGoalPoints;
+    QStringList groupNames;
+    
+    //Ejemplos
     master_msgs_iele3338::Obstacle obstacleExample;
     master_msgs_iele3338::Covariance covarianceExample;
+    //Ejemplos
+    
+    geometry_msgs::Pose startPoint, goalPoint;
+    int numberOfObstacles;
+    QVector<master_msgs_iele3338::Obstacle> *obstaclesVector;
+    
+    
+private slots:
+  void startTestButtonSlot();
+  void readyCheckBoxSlot(int checkBoxState);
+  
+signals:
+  void startServiceSignal(geometry_msgs::Pose start, geometry_msgs::Pose goal, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);
 };
 
 #endif
