@@ -49,14 +49,16 @@ MasterWindow::MasterWindow(int xw, int yw)
     masterIpAddressLabel = new QLabel("Master IP Address");
     robotIpAddressLabel = new QLabel("Robot IP Adress");
     console = new QPlainTextEdit();
-    configurationFile = new QFile(QString::fromStdString(ros::package::getPath("master_package_iele3338")) + "/.test_configuration_file.conf");
+    configurationFile = new QFile();
+    obstaclesVector = new QVector<master_msgs_iele3338::Obstacle>();
+    startPointsVector = new QVector<geometry_msgs::Pose>();
+    goalPointsVector = new QVector<geometry_msgs::Pose>();
     
     //Central Widget
     setCentralWidget(window);
     window->setLayout(mainLayout);
     //window->setFixedSize(QSize(xw, yw));
     setWindowTitle("Master Package IELE3338");
-    
     
     //Add widgets to Main Layout 
     mainLayout->addWidget(appNameLabel, 0, 0);
@@ -75,12 +77,8 @@ MasterWindow::MasterWindow(int xw, int yw)
     configurationLayout->addWidget(goalPointComboBox, 2, 1);
     configurationLayout->addWidget(obstaclesLabel, 3, 0);
     configurationLayout->addWidget(obstacleList, 3, 1);
-    obstacleList->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    
-    
+    obstacleList->setSelectionMode(QAbstractItemView::ExtendedSelection);    
     obstacleList->setFixedSize(QSize(0.75*xw, 0.3*yw));
-    obstacleList->addItem("Test1");
-    obstacleList->addItem("Test2");
     
     //Add widgets to Ready Layout
     readyLayout->addWidget(readyCheckBox, 0, 0);
@@ -107,6 +105,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     QFont f("Arial",16);
     QFontMetrics fm(f);
     appNameLabel->setFont(f);
+    configurationFileName = QString::fromStdString(ros::package::getPath("master_package_iele3338")) + "/.test_configuration_file.conf";
     
     //Signals and slots connection
     connect(startTestButton, SIGNAL(clicked()), this, SLOT(startTestButtonSlot()));
@@ -128,7 +127,18 @@ MasterWindow::MasterWindow(int xw, int yw)
     covarianceExample.sigma32 = 1.0;
     covarianceExample.sigma33 = 1.0;
     
-    //Start thread
+    loadConfigurationFile();
+    rosSpinThread->start();
+}
+
+MasterWindow::~MasterWindow()
+{
+  
+}
+
+void MasterWindow::loadConfigurationFile()
+{
+    configurationFile->setFileName(configurationFileName);
     if (!configurationFile->open(QIODevice::ReadOnly | QIODevice::Text))
       ROS_ERROR("Configuration file not found");
     else
@@ -140,7 +150,7 @@ MasterWindow::MasterWindow(int xw, int yw)
 	QString line = in.readLine();
 	if (fileCount < 5)
 	{
-	  QStringList pieces = line.split(": ");	   
+	  QStringList pieces = line.split(": ");   
 	  if (pieces.at(0) == "Number of Groups")
 	    numberOfGroups = pieces.at(1).toInt();
 	  else if (pieces.at(0) == "Number of Obstacles")
@@ -149,57 +159,66 @@ MasterWindow::MasterWindow(int xw, int yw)
 	    numberOfStartPoints = pieces.at(1).toInt();
 	  else if (pieces.at(0) == "Number of Goal Points")
 	    numberOfGoalPoints = pieces.at(1).toInt();
-	  cout << pieces.at(1).toStdString() << endl;
 	}
 	else if ((fileCount > 5) && (fileCount < (numberOfGroups+6)))
 	  groupNames.append(line);
 	else if ((fileCount > (numberOfGroups+6)) && fileCount < (numberOfGroups+7+numberOfObstacles))
 	{
-	  
+	  QStringList pieces = line.split(",");
+	  master_msgs_iele3338::Obstacle obstacle;
+	  obstacle.position.position.x = pieces.at(0).toDouble();
+	  obstacle.position.position.y = pieces.at(1).toDouble();
+	  obstacle.radius = pieces.at(2).toInt();
+	  obstaclesVector->append(obstacle);
+	  obstaclesNames.append(line);
+	}
+	else if ((fileCount > (numberOfGroups+7+numberOfObstacles)) && fileCount < (numberOfGroups+8+numberOfObstacles+numberOfStartPoints))
+	{
+	  QStringList pieces = line.split(",");
+	  geometry_msgs::Pose point;
+	  point.position.x = pieces.at(0).toDouble();
+	  point.position.y = pieces.at(1).toDouble();
+	  point.orientation.w = pieces.at(2).toDouble();
+	  startPointsVector->append(point);
+	  startPointNames.append(line);
+	}
+	else if ((fileCount > (numberOfGroups+8+numberOfObstacles+numberOfStartPoints)) && fileCount < (numberOfGroups+9+numberOfObstacles+numberOfStartPoints+numberOfGoalPoints))
+	{
+	  QStringList pieces = line.split(",");
+	  geometry_msgs::Pose point;
+	  point.position.x = pieces.at(0).toDouble();
+	  point.position.y = pieces.at(1).toDouble();
+	  point.orientation.w = pieces.at(2).toDouble();
+	  goalPointsVector->append(point);
+	  goalPointNames.append(line);
 	}
 	fileCount++;
       }
+      for (int i = 0;i < numberOfGroups;i++)
+	groupNumberComboBox->addItem(groupNames.at(i));
+      for (int i = 0;i < numberOfObstacles;i++)
+	obstacleList->addItem(QString::number(i+1) + ": " + obstaclesNames.at(i));
+      for (int i = 0;i < numberOfStartPoints;i++)
+	startPointComboBox->addItem(QString::number(i+1) + ": " + startPointNames.at(i));
+      for (int i = 0;i < numberOfGoalPoints;i++)
+	goalPointComboBox->addItem(QString::number(i+1) + ": " + goalPointNames.at(i));
+      
       ROS_INFO("Configuration file succesfully loaded");
     }
-      
-    rosSpinThread->start();
-}
-
-MasterWindow::~MasterWindow()
-{
-  
 }
 
 void MasterWindow::startTestButtonSlot()
-{
-    int numberObstacles = 3;
-    geometry_msgs::Pose start, goal;
-    master_msgs_iele3338::Obstacle obsArray[numberObstacles];
-    start.position.x = 0;
-    start.position.y = 0;
-    start.orientation.w = 0;
-    goal.position.x = 1;
-    goal.position.y = 1;
-    goal.orientation.w = 1;
-    obsArray[0].position.position.x = 2;
-    obsArray[0].position.position.y = 2;
-    obsArray[0].radius = 5;
-    obsArray[1].position.position.x = 10;
-    obsArray[1].position.position.y = 10;
-    obsArray[1].radius = 8;
-    obsArray[2].position.position.x = 15;
-    obsArray[2].position.position.y = 15;
-    obsArray[2].radius = 10;
+{    
+    startPoint = startPointsVector->at(startPointComboBox->currentIndex());
+    goalPoint = goalPointsVector->at(goalPointComboBox->currentIndex());
+    QVector<master_msgs_iele3338::Obstacle> *selectedObstaclesVector;
+    selectedObstaclesVector = new QVector<master_msgs_iele3338::Obstacle>();
     
-    
-    numberOfObstacles = numberObstacles;
-    startPoint = start;
-    goalPoint = goal;
-    obstaclesVector = new QVector<master_msgs_iele3338::Obstacle>;
-    for (int i = 0;i < numberOfObstacles;i++)
-      obstaclesVector->append(obsArray[i]);
+    QModelIndexList indexes = obstacleList->selectionModel()->selectedIndexes();
+    foreach(QModelIndex index, indexes)
+      selectedObstaclesVector->append(obstaclesVector->at(index.row()));
         
-    emit startServiceSignal(startPoint, goalPoint, numberOfObstacles, obstaclesVector);
+    emit startServiceSignal(startPoint, goalPoint, (int)(selectedObstaclesVector->size()), selectedObstaclesVector);
 }
 
 void MasterWindow::readyCheckBoxSlot(int checkBoxState)

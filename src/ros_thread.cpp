@@ -66,9 +66,8 @@ void ros_thread::startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs:
     srv.request.goal = goalPoint;
     srv.request.n_obstacles = numberObstacles;
     srv.request.obstacles.resize(numberObstacles);
-    srv.request.obstacles[0] = obstacles->at(0);
-    srv.request.obstacles[1] = obstacles->at(1);
-    srv.request.obstacles[2] = obstacles->at(2);
+    for (int i = 0;i < numberObstacles;i++)
+      srv.request.obstacles[i] = obstacles->at(i);
     
     if (start_client.call(srv))
       ROS_INFO("Start service client called");

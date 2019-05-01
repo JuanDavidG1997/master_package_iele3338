@@ -37,6 +37,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QStringList>
+#include <QListWidgetItem>
+#include <QModelIndexList>
 #include <iostream>
 #include "ros/package.h"
 #include "ros/ros.h"
@@ -54,6 +56,7 @@ class MasterWindow : public QMainWindow
 public:
     MasterWindow(int xw, int yw);
     virtual ~MasterWindow();
+    void loadConfigurationFile();
     
 private:
     QGridLayout *mainLayout, *configurationLayout, *readyLayout, *infoLayout, *testLayout;
@@ -66,7 +69,8 @@ private:
     ros_thread *rosSpinThread;
     QFile *configurationFile;
     int numberOfGroups, numberObstacles, numberOfStartPoints, numberOfGoalPoints;
-    QStringList groupNames;
+    QStringList groupNames, obstaclesNames, startPointNames, goalPointNames;
+    QString configurationFileName;
     
     //Ejemplos
     master_msgs_iele3338::Obstacle obstacleExample;
@@ -76,7 +80,7 @@ private:
     geometry_msgs::Pose startPoint, goalPoint;
     int numberOfObstacles;
     QVector<master_msgs_iele3338::Obstacle> *obstaclesVector;
-    
+    QVector<geometry_msgs::Pose> *startPointsVector, *goalPointsVector;
     
 private slots:
   void startTestButtonSlot();
