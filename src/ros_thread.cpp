@@ -25,6 +25,7 @@ ros_thread::ros_thread()
     service_ack = n.advertiseService("ack_service", &ros_thread::AckService_callback, this);
     service_end = n.advertiseService("end_service", &ros_thread::EndService_callback, this);
     start_client = n.serviceClient<master_msgs_iele3338::StartService>("start_service");
+    groupNumber = -1;
 }
 
 ros_thread::~ros_thread()
@@ -38,11 +39,20 @@ void ros_thread::run()
 }
 
 
+void ros_thread::setGroupNumber(int group)
+{
+    groupNumber = group;
+}
+
+
 bool ros_thread::AckService_callback(master_msgs_iele3338::AckService::Request  &req,
 				     master_msgs_iele3338::AckService::Response &res)
 {
-    res.state = 1;
     ROS_INFO("Request: Group number = %d, IP = %s", (int)req.group_number, ((std::string)req.ip_address).c_str());
+    if((int)req.group_number == groupNumber)
+	res.state = 1;
+    else
+        res.state = 0;
     ROS_INFO("Response: State = %d", (int)res.state);
     return true;
 }
@@ -69,7 +79,7 @@ void ros_thread::startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs:
     for (int i = 0;i < numberObstacles;i++)
       srv.request.obstacles[i] = obstacles->at(i);
     
-    if (start_client.call(srv))
+    if (start_client.call(srv) || (numberObstacles == 0))
       ROS_INFO("Start service client called");
     else
       ROS_ERROR("Failed to call start_service");

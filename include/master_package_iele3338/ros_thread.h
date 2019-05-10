@@ -38,6 +38,7 @@ public:
   ros_thread();
   ~ros_thread();
   void run();
+  void setGroupNumber(int groupNumber);
 
 private:
   bool AckService_callback(master_msgs_iele3338::AckService::Request  &req,
@@ -50,6 +51,8 @@ private:
   ros::ServiceServer service_end;
   ros::ServiceClient start_client;
   master_msgs_iele3338::StartService srv;
+  int groupNumber;
+  
   
 private slots:
   void startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs::Pose goalPoint, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);

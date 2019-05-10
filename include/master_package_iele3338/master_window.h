@@ -85,6 +85,7 @@ private:
 private slots:
   void startTestButtonSlot();
   void readyCheckBoxSlot(int checkBoxState);
+  void groupNumberChangedSlot(int index);
   
 signals:
   void startServiceSignal(geometry_msgs::Pose start, geometry_msgs::Pose goal, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);

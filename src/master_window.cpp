@@ -111,6 +111,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     connect(startTestButton, SIGNAL(clicked()), this, SLOT(startTestButtonSlot()));
     connect(this, SIGNAL(startServiceSignal(geometry_msgs::Pose, geometry_msgs::Pose, int, QVector<master_msgs_iele3338::Obstacle>*)), rosSpinThread, SLOT(startServiceSlot(geometry_msgs::Pose, geometry_msgs::Pose, int, QVector<master_msgs_iele3338::Obstacle>*)));
     connect(readyCheckBox, SIGNAL(stateChanged(int)), this, SLOT(readyCheckBoxSlot(int)));
+    connect(groupNumberComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(groupNumberChangedSlot(int)));
     
     //Obstacle Example
     obstacleExample.position.position.x = 10;
@@ -239,4 +240,10 @@ void MasterWindow::readyCheckBoxSlot(int checkBoxState)
       goalPointComboBox->setEnabled(true);
       obstacleList->setEnabled(true);
     }
+}
+
+void MasterWindow::groupNumberChangedSlot(int index)
+{
+    int groupNumber = index + 1;
+    rosSpinThread->setGroupNumber(groupNumber);
 }
