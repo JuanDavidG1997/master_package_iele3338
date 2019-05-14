@@ -33,6 +33,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     readyLayout = new QGridLayout();
     infoLayout = new QGridLayout();
     testLayout = new QGridLayout();
+    headerLayout = new QGridLayout();
     rosSpinThread = new ros_thread();
     loadConfigFileButton = new QPushButton("Load Configuration File");
     appNameLabel = new QLabel("Master Node (IELE3338)");
@@ -53,20 +54,28 @@ MasterWindow::MasterWindow(int xw, int yw)
     obstaclesVector = new QVector<master_msgs_iele3338::Obstacle>();
     startPointsVector = new QVector<geometry_msgs::Pose>();
     goalPointsVector = new QVector<geometry_msgs::Pose>();
+    testRemainingTimerLCD = new QLCDNumber(4);
+    testRemainingTime = new QTime(0, initialTestTimeMins, initialTestTimeSecs);
+    testRemainingTimer = new QTimer();
     
     //Central Widget
     setCentralWidget(window);
     window->setLayout(mainLayout);
-    //window->setFixedSize(QSize(xw, yw));
+    //this->setWindowState(Qt::WindowMaximized);
+    window->setFixedSize(QSize(xw, yw));
     setWindowTitle("Master Package IELE3338");
     
     //Add widgets to Main Layout 
-    mainLayout->addWidget(appNameLabel, 0, 0);
+    mainLayout->addLayout(headerLayout, 0, 0);
     mainLayout->addLayout(configurationLayout, 1, 0);
     mainLayout->addLayout(readyLayout, 2, 0);
     mainLayout->addLayout(infoLayout, 3, 0);
     mainLayout->addWidget(console, 4, 0);
     mainLayout->addLayout(testLayout, 5, 0);
+    
+    //Add widgets to header Layout
+    headerLayout->addWidget(appNameLabel, 0, 0);
+    headerLayout->addWidget(testRemainingTimerLCD, 0, 1);
     
     //Add widgets to Configuration Layout
     configurationLayout->addWidget(groupNumberLabel, 0, 0);
@@ -102,9 +111,13 @@ MasterWindow::MasterWindow(int xw, int yw)
     console->setEnabled(false);
     console->setMaximumBlockCount(10);
     appNameLabel->setAlignment(Qt::AlignCenter);
-    QFont f("Arial",16);
+    QFont f("Arial",24);
     QFontMetrics fm(f);
     appNameLabel->setFont(f);
+    testRemainingTimerLCD->setSegmentStyle(QLCDNumber::Filled);
+    mainLayout->setRowStretch(0, 10);
+    QString time = testRemainingTime->toString();
+    testRemainingTimerLCD->display(time);
     configurationFileName = QString::fromStdString(ros::package::getPath("master_package_iele3338")) + "/.test_configuration_file.conf";
     
     //Signals and slots connection
@@ -112,6 +125,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     connect(this, SIGNAL(startServiceSignal(geometry_msgs::Pose, geometry_msgs::Pose, int, QVector<master_msgs_iele3338::Obstacle>*)), rosSpinThread, SLOT(startServiceSlot(geometry_msgs::Pose, geometry_msgs::Pose, int, QVector<master_msgs_iele3338::Obstacle>*)));
     connect(readyCheckBox, SIGNAL(stateChanged(int)), this, SLOT(readyCheckBoxSlot(int)));
     connect(groupNumberComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(groupNumberChangedSlot(int)));
+    connect(testRemainingTimer, SIGNAL(timeout()), this, SLOT(initializeCounterTimerSlot()));
     
     //Obstacle Example
     obstacleExample.position.position.x = 10;
@@ -210,6 +224,8 @@ void MasterWindow::loadConfigurationFile()
 
 void MasterWindow::startTestButtonSlot()
 {    
+  if (startTestButton->text() == "Start")
+  {
     startPoint = startPointsVector->at(startPointComboBox->currentIndex());
     goalPoint = goalPointsVector->at(goalPointComboBox->currentIndex());
     QVector<master_msgs_iele3338::Obstacle> *selectedObstaclesVector;
@@ -220,6 +236,19 @@ void MasterWindow::startTestButtonSlot()
       selectedObstaclesVector->append(obstaclesVector->at(index.row()));
         
     emit startServiceSignal(startPoint, goalPoint, (int)(selectedObstaclesVector->size()), selectedObstaclesVector);
+    testRemainingTime->setHMS(0, initialTestTimeMins, initialTestTimeSecs);
+    testRemainingTimerLCD->display(testRemainingTime->toString());
+    testRemainingTimer->start(oneSecondTimeMilisecs);
+    readyCheckBox->setEnabled(false);
+    startTestButton->setText("Stop");
+  }
+  else if (startTestButton->text() == "Stop")
+  {
+     startTestButton->setText("Start");
+     testRemainingTimer->stop();
+     readyCheckBox->setEnabled(true);
+  }
+    
 }
 
 void MasterWindow::readyCheckBoxSlot(int checkBoxState)
@@ -246,4 +275,14 @@ void MasterWindow::groupNumberChangedSlot(int index)
 {
     int groupNumber = index + 1;
     rosSpinThread->setGroupNumber(groupNumber);
+}
+
+void MasterWindow::initializeCounterTimerSlot()
+{
+    *testRemainingTime = testRemainingTime->addMSecs(-oneSecondTimeMilisecs);
+    QString time = testRemainingTime->toString();
+    testRemainingTimerLCD->display(time);
+    
+    if (*testRemainingTime == QTime(0,0,0))
+      testRemainingTimer->stop();
 }

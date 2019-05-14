@@ -39,6 +39,9 @@
 #include <QStringList>
 #include <QListWidgetItem>
 #include <QModelIndexList>
+#include <QLCDNumber>
+#include <QTime>
+#include <QTimer>
 #include <iostream>
 #include "ros/package.h"
 #include "ros/ros.h"
@@ -59,7 +62,10 @@ public:
     void loadConfigurationFile();
     
 private:
-    QGridLayout *mainLayout, *configurationLayout, *readyLayout, *infoLayout, *testLayout;
+    const int initialTestTimeMins = 1;
+    const int initialTestTimeSecs = 0;
+    const int oneSecondTimeMilisecs = 1000;
+    QGridLayout *mainLayout, *configurationLayout, *readyLayout, *infoLayout, *testLayout, *headerLayout;
     QPushButton *startTestButton, *loadConfigFileButton;
     QLabel *appNameLabel, *groupNumberLabel, *startPointLabel, *goalPointLabel, *obstaclesLabel, *masterIpAddressLabel, *robotIpAddressLabel;
     QComboBox *groupNumberComboBox, *startPointComboBox, *goalPointComboBox;
@@ -71,6 +77,9 @@ private:
     int numberOfGroups, numberObstacles, numberOfStartPoints, numberOfGoalPoints;
     QStringList groupNames, obstaclesNames, startPointNames, goalPointNames;
     QString configurationFileName;
+    QLCDNumber *testRemainingTimerLCD;
+    QTime *testRemainingTime;
+    QTimer *testRemainingTimer;
     
     //Ejemplos
     master_msgs_iele3338::Obstacle obstacleExample;
@@ -86,6 +95,7 @@ private slots:
   void startTestButtonSlot();
   void readyCheckBoxSlot(int checkBoxState);
   void groupNumberChangedSlot(int index);
+  void initializeCounterTimerSlot();
   
 signals:
   void startServiceSignal(geometry_msgs::Pose start, geometry_msgs::Pose goal, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);
