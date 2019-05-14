@@ -47,8 +47,8 @@ MasterWindow::MasterWindow(int xw, int yw)
     obstacleList = new QListWidget();
     readyCheckBox = new QCheckBox("Master Ready");
     startTestButton = new QPushButton("Start");
-    masterIpAddressLabel = new QLabel("Master IP Address");
-    robotIpAddressLabel = new QLabel("Robot IP Adress");
+    masterIpAddressLabel = new QLabel("Master IP Address: ");
+    robotIpAddressLabel = new QLabel("Robot IP Adress: ");
     console = new QPlainTextEdit();
     configurationFile = new QFile();
     obstaclesVector = new QVector<master_msgs_iele3338::Obstacle>();
@@ -95,7 +95,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     
     //Add widgets to Info Layout
     infoLayout->addWidget(masterIpAddressLabel, 0, 0);
-    infoLayout->addWidget(robotIpAddressLabel, 0, 1);
+    infoLayout->addWidget(robotIpAddressLabel, 1, 0);
 
     //Add widgets to Test Layout
     
@@ -120,12 +120,26 @@ MasterWindow::MasterWindow(int xw, int yw)
     testRemainingTimerLCD->display(time);
     configurationFileName = QString::fromStdString(ros::package::getPath("master_package_iele3338")) + "/.test_configuration_file.conf";
     
+    const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
+    for (const QHostAddress &address: QNetworkInterface::allAddresses())
+    {
+      if (address.protocol() == QAbstractSocket::IPv4Protocol && address != localhost)
+	ipAddress = address.toString();
+    }
+    
+    masterIpAddressLabel->setText(masterIpAddressLabel->text() + ipAddress);
+    QFont f1("Arial",16);
+    QFontMetrics fm1(f1);
+    masterIpAddressLabel->setFont(f1);
+    robotIpAddressLabel->setFont(f1);
+    
     //Signals and slots connection
     connect(startTestButton, SIGNAL(clicked()), this, SLOT(startTestButtonSlot()));
     connect(this, SIGNAL(startServiceSignal(geometry_msgs::Pose, geometry_msgs::Pose, int, QVector<master_msgs_iele3338::Obstacle>*)), rosSpinThread, SLOT(startServiceSlot(geometry_msgs::Pose, geometry_msgs::Pose, int, QVector<master_msgs_iele3338::Obstacle>*)));
     connect(readyCheckBox, SIGNAL(stateChanged(int)), this, SLOT(readyCheckBoxSlot(int)));
     connect(groupNumberComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(groupNumberChangedSlot(int)));
     connect(testRemainingTimer, SIGNAL(timeout()), this, SLOT(initializeCounterTimerSlot()));
+    connect(rosSpinThread, SIGNAL(ipAddressSignal(QString)), this, SLOT(ipAddressSlot(QString)));
     
     //Obstacle Example
     obstacleExample.position.position.x = 10;
@@ -247,8 +261,7 @@ void MasterWindow::startTestButtonSlot()
      startTestButton->setText("Start");
      testRemainingTimer->stop();
      readyCheckBox->setEnabled(true);
-  }
-    
+  } 
 }
 
 void MasterWindow::readyCheckBoxSlot(int checkBoxState)
@@ -284,5 +297,14 @@ void MasterWindow::initializeCounterTimerSlot()
     testRemainingTimerLCD->display(time);
     
     if (*testRemainingTime == QTime(0,0,0))
+    {
       testRemainingTimer->stop();
+      startTestButton->setText("Start");
+      readyCheckBox->setEnabled(true);
+    }
+}
+
+void MasterWindow::ipAddressSlot(QString address)
+{
+  robotIpAddressLabel->setText(robotIpAddressLabel->text() + address);
 }

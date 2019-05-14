@@ -48,6 +48,8 @@
 #include "master_package_iele3338/ros_thread.h"
 #include "master_msgs_iele3338/Obstacle.h"
 #include "master_msgs_iele3338/Covariance.h"
+#include <QHostAddress>
+#include <QNetworkInterface>
 
 using namespace std;
 
@@ -80,12 +82,11 @@ private:
     QLCDNumber *testRemainingTimerLCD;
     QTime *testRemainingTime;
     QTimer *testRemainingTimer;
+    QString ipAddress;
     
     //Ejemplos
     master_msgs_iele3338::Obstacle obstacleExample;
     master_msgs_iele3338::Covariance covarianceExample;
-    //Ejemplos
-    
     geometry_msgs::Pose startPoint, goalPoint;
     int numberOfObstacles;
     QVector<master_msgs_iele3338::Obstacle> *obstaclesVector;
@@ -96,6 +97,7 @@ private slots:
   void readyCheckBoxSlot(int checkBoxState);
   void groupNumberChangedSlot(int index);
   void initializeCounterTimerSlot();
+  void ipAddressSlot(QString address);
   
 signals:
   void startServiceSignal(geometry_msgs::Pose start, geometry_msgs::Pose goal, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);

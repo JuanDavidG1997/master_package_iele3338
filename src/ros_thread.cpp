@@ -54,6 +54,7 @@ bool ros_thread::AckService_callback(master_msgs_iele3338::AckService::Request  
     else
         res.state = 0;
     ROS_INFO("Response: State = %d", (int)res.state);
+    emit ipAddressSignal(QString::fromStdString(req.ip_address));
     return true;
 }
 

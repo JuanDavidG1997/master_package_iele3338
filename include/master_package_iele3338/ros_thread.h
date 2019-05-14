@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QThread>
 #include <QVector>
+#include <QString>
 #include "ros/ros.h"
 #include "master_msgs_iele3338/AckService.h"
 #include "master_msgs_iele3338/EndService.h"
@@ -53,6 +54,8 @@ private:
   master_msgs_iele3338::StartService srv;
   int groupNumber;
   
+signals:
+  void ipAddressSignal(QString address);
   
 private slots:
   void startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs::Pose goalPoint, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);
