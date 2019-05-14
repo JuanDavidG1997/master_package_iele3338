@@ -306,5 +306,5 @@ void MasterWindow::initializeCounterTimerSlot()
 
 void MasterWindow::ipAddressSlot(QString address)
 {
-  robotIpAddressLabel->setText(robotIpAddressLabel->text() + address);
+  robotIpAddressLabel->setText("Robot IP Adress: " + address);
 }
