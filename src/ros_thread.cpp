@@ -26,6 +26,8 @@ ros_thread::ros_thread()
     service_end = n.advertiseService("end_service", &ros_thread::EndService_callback, this);
     start_client = n.serviceClient<master_msgs_iele3338::StartService>("start_service");
     groupNumber = -1;
+    posSub = n.subscribe("robot_position", 10, &ros_thread::robotPositionCallback, this); 
+    covSub = n.subscribe("robot_uncertainty", 100, &ros_thread::robotUncertaintyCallback, this); 
 }
 
 ros_thread::~ros_thread()
@@ -70,6 +72,17 @@ bool ros_thread::EndService_callback(master_msgs_iele3338::EndService::Request  
     ROS_INFO("Response: Correct = %d", (int)res.correct);
     return true;
 }
+
+void ros_thread::robotPositionCallback(const geometry_msgs::Pose& msg)
+{
+    emit robotPositionSignal(msg.position.x, msg.position.y, msg.orientation.w); 
+}
+
+void ros_thread::robotUncertaintyCallback(const master_msgs_iele3338::Covariance& msg)
+{
+    emit robotUncertaintySignal(msg.sigma11, msg.sigma12, msg.sigma13, msg.sigma21, msg.sigma22, msg.sigma23, msg.sigma31, msg.sigma32, msg.sigma33); 
+}
+
 
 void ros_thread::startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs::Pose goalPoint, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles)
 {
