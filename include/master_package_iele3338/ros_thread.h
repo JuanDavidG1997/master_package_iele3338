@@ -30,6 +30,7 @@
 #include "master_msgs_iele3338/EndService.h"
 #include "master_msgs_iele3338/StartService.h"
 #include "geometry_msgs/Pose.h"
+#include "master_msgs_iele3338/Covariance.h"
 
 class ros_thread : public QThread
 {
@@ -46,16 +47,22 @@ private:
 			   master_msgs_iele3338::AckService::Response &res);
   bool EndService_callback(master_msgs_iele3338::EndService::Request  &req,
 			   master_msgs_iele3338::EndService::Response &res);
+  void robotPositionCallback(const geometry_msgs::Pose &msg);
+  void robotUncertaintyCallback(const master_msgs_iele3338::Covariance &msg); 
   
   ros::NodeHandle n;
   ros::ServiceServer service_ack;
   ros::ServiceServer service_end;
   ros::ServiceClient start_client;
+  ros::Subscriber posSub; 
+  ros::Subscriber covSub; 
   master_msgs_iele3338::StartService srv;
   int groupNumber;
   
 signals:
   void ipAddressSignal(QString address);
+  void robotPositionSignal(double x, double y, double theta); 
+  void robotUncertaintySignal(float sigma11, float sigma12, float sigma13, float sigma21, float sigma22, float sigma23, float sigma31, float sigma32, float sigma33); 
   
 private slots:
   void startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs::Pose goalPoint, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);

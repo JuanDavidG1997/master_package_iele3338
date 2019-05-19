@@ -67,9 +67,9 @@ private:
     const int initialTestTimeMins = 1;
     const int initialTestTimeSecs = 0;
     const int oneSecondTimeMilisecs = 1000;
-    QGridLayout *mainLayout, *configurationLayout, *readyLayout, *infoLayout, *testLayout, *headerLayout;
-    QPushButton *startTestButton, *loadConfigFileButton;
-    QLabel *appNameLabel, *groupNumberLabel, *startPointLabel, *goalPointLabel, *obstaclesLabel, *masterIpAddressLabel, *robotIpAddressLabel;
+    QGridLayout *mainLayout, *configurationLayout, *infoLayout, *headerLayout, *infoRobotLayout, *optionsLayout;
+    QPushButton *startTestButton, *loadConfigFileButton, *graphStartButton;
+    QLabel *appNameLabel, *groupNumberLabel, *startPointLabel, *goalPointLabel, *obstaclesLabel, *masterIpAddressLabel, *robotIpAddressLabel, *robotPosLabel, *robotPosXLabel, *robotPosYLabel, *robotPosThetaLabel, *covarianceLabel, *covariance_1_1Label, *covariance_1_2Label, *covariance_1_3Label, *covariance_2_1Label, *covariance_2_2Label, *covariance_2_3Label, *covariance_3_1Label, *covariance_3_2Label, *covariance_3_3Label, *xLabel, *yLabel, *thetaLabel;
     QComboBox *groupNumberComboBox, *startPointComboBox, *goalPointComboBox;
     QListWidget *obstacleList;
     QPlainTextEdit *console;
@@ -98,6 +98,8 @@ private slots:
   void groupNumberChangedSlot(int index);
   void initializeCounterTimerSlot();
   void ipAddressSlot(QString address);
+  void updateRobotPoseSlot(double x, double y, double theta); 
+  void updateRobotUncertaintySlot(float sigma11, float sigma12, float sigma13, float sigma21, float sigma22, float sigma23, float sigma31, float sigma32, float sigma33); 
   
 signals:
   void startServiceSignal(geometry_msgs::Pose start, geometry_msgs::Pose goal, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);
