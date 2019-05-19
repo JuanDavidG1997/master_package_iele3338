@@ -2,6 +2,7 @@
 import rospy
 import rospkg
 from master_msgs_iele3338.msg import Covariance
+from geometry_msgs.msg import Pose
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
@@ -9,6 +10,8 @@ import warnings
 import matplotlib.cbook
 warnings.filterwarnings("ignore",category=matplotlib.cbook.mplDeprecation)
 from matplotlib import transforms
+
+global X, Y, THETA
 
 rospack = rospkg.RosPack()
 plt.rcParams["figure.figsize"] = (7,6)
@@ -28,9 +31,27 @@ THETA = 0
 def kill_node():
 	rospy.signal_shutdown('Quit')
 
+
+def positionCallback(msg):
+	global X, Y, THETA
+	X = msg.position.x 
+	Y = msg.position.y
+	THETA = msg.orientation.w
+
+def uncertaintyCallback(msg):
+	pass
+
 def main_master_plot():
-	rospy.init_node('main_master_plot', anonymous=True)
+
+	global X, Y, THETA
+
 	rospy.loginfo("Starting master plot node")
+
+	rospy.init_node('main_master_plot', anonymous=True)
+	rospy.Subscriber('robot_position', Pose, positionCallback)
+	rospy.Subscriber('robot_uncertainty', Covariance, uncertaintyCallback)
+	
+	
 	rate = rospy.Rate(4)
 
 	if matplotlib.__version__ < '2.2.4':
@@ -65,21 +86,10 @@ def main_master_plot():
 			robotImgMPL.remove()
 			del robotImgMPL
 
-		X = 100
-		Y = 100
-		THETA = 0
-		
-		
-		LEFT = X - frame_height/2
-		RIGHT = X + frame_height/2
-		BOTTOM = Y - frame_height/2
-		TOP = Y + frame_height/2
-
-		
 		robotImgMPL = ax1.imshow(img, zorder=10)
 
 		tr = transforms.Affine2D().scale(0.3,0.3)
-		tr.rotate_deg_around(132*0.3/2, 132*0.3/2, THETA)
+		tr.rotate_around(132*0.3/2, 132*0.3/2, THETA)
 		tr.translate(X-132*0.3/2, Y-132*0.3/2)
 
 
