@@ -34,7 +34,6 @@ MasterWindow::MasterWindow(int xw, int yw)
     headerLayout = new QGridLayout();
     infoRobotLayout = new QGridLayout();
     optionsLayout = new QGridLayout(); 
-    rosSpinThread = new ros_thread();
     loadConfigFileButton = new QPushButton("Load Configuration File");
     appNameLabel = new QLabel("Master Node (IELE3338)");
     groupNumberLabel = new QLabel("Group Number");
@@ -64,7 +63,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     obstacleList = new QListWidget();
     readyCheckBox = new QCheckBox("Master Ready");
     startTestButton = new QPushButton("Start");
-    graphStartButton = new QPushButton("Graph"); 
+    graphStartButton = new QPushButton("Position Plot"); 
     masterIpAddressLabel = new QLabel("Master IP Address ");
     robotIpAddressLabel = new QLabel("Robot IP Adress ");
     console = new QPlainTextEdit();
@@ -75,6 +74,9 @@ MasterWindow::MasterWindow(int xw, int yw)
     testRemainingTimerLCD = new QLCDNumber(4);
     testRemainingTime = new QTime(0, initialTestTimeMins, initialTestTimeSecs);
     testRemainingTimer = new QTimer();
+    
+    rosSpinThread = new ros_thread();
+    plotNodeThread = new plot_node_thread(graphStartButton);
     
     //Central Widget
     setCentralWidget(window);
@@ -182,6 +184,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     
     //Signals and slots connection
     connect(startTestButton, SIGNAL(clicked()), this, SLOT(startTestButtonSlot()));
+    connect(graphStartButton, SIGNAL(clicked()), this, SLOT(graphStartButtonSlot()));
     connect(this, SIGNAL(startServiceSignal(geometry_msgs::Pose, geometry_msgs::Pose, int, QVector<master_msgs_iele3338::Obstacle>*)), rosSpinThread, SLOT(startServiceSlot(geometry_msgs::Pose, geometry_msgs::Pose, int, QVector<master_msgs_iele3338::Obstacle>*)));
     connect(readyCheckBox, SIGNAL(stateChanged(int)), this, SLOT(readyCheckBoxSlot(int)));
     connect(groupNumberComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(groupNumberChangedSlot(int)));
@@ -310,6 +313,12 @@ void MasterWindow::startTestButtonSlot()
      testRemainingTimer->stop();
      readyCheckBox->setEnabled(true);
   } 
+}
+
+void MasterWindow::graphStartButtonSlot()
+{
+      plotNodeThread->start();
+      graphStartButton->setEnabled(false);
 }
 
 void MasterWindow::readyCheckBoxSlot(int checkBoxState)
