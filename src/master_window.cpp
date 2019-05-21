@@ -34,8 +34,6 @@ MasterWindow::MasterWindow(int xw, int yw)
     headerLayout = new QGridLayout();
     infoRobotLayout = new QGridLayout();
     optionsLayout = new QGridLayout(); 
-    rosSpinThread = new ros_thread();
-    plotNodeThread = new plot_node_thread();
     loadConfigFileButton = new QPushButton("Load Configuration File");
     appNameLabel = new QLabel("Master Node (IELE3338)");
     groupNumberLabel = new QLabel("Group Number");
@@ -65,7 +63,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     obstacleList = new QListWidget();
     readyCheckBox = new QCheckBox("Master Ready");
     startTestButton = new QPushButton("Start");
-    graphStartButton = new QPushButton("Graph"); 
+    graphStartButton = new QPushButton("Position Plot"); 
     masterIpAddressLabel = new QLabel("Master IP Address ");
     robotIpAddressLabel = new QLabel("Robot IP Adress ");
     console = new QPlainTextEdit();
@@ -76,6 +74,9 @@ MasterWindow::MasterWindow(int xw, int yw)
     testRemainingTimerLCD = new QLCDNumber(4);
     testRemainingTime = new QTime(0, initialTestTimeMins, initialTestTimeSecs);
     testRemainingTimer = new QTimer();
+    
+    rosSpinThread = new ros_thread();
+    plotNodeThread = new plot_node_thread(graphStartButton);
     
     //Central Widget
     setCentralWidget(window);
@@ -316,7 +317,8 @@ void MasterWindow::startTestButtonSlot()
 
 void MasterWindow::graphStartButtonSlot()
 {
-    plotNodeThread->start();
+      plotNodeThread->start();
+      graphStartButton->setEnabled(false);
 }
 
 void MasterWindow::readyCheckBoxSlot(int checkBoxState)

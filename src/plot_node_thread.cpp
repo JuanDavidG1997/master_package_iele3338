@@ -20,19 +20,20 @@
 
 #include "master_package_iele3338/plot_node_thread.h"
 
-plot_node_thread::plot_node_thread()
+plot_node_thread::plot_node_thread(QPushButton *parentButton)
 {
-
+    parentButton_ref = parentButton;
 }
 
 plot_node_thread::~plot_node_thread()
 {
-  
+    
 }
 
 void plot_node_thread::run()
 {
     std::system("rosrun master_package_iele3338 master_plot.py");
+    parentButton_ref->setEnabled(true);
 }
 
 

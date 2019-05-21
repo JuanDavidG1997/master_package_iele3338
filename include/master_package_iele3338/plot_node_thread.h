@@ -25,15 +25,20 @@
 #include <QObject>
 #include <QThread>
 #include <iostream>
+#include <QPushButton>
 
 class plot_node_thread : public QThread
 {
     Q_OBJECT
 
 public:
-  plot_node_thread();
+  plot_node_thread(QPushButton *parentButton);
   ~plot_node_thread();
   void run();
+  
+private:
+  QPushButton *parentButton_ref;
+
 
 };
 
