@@ -35,6 +35,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     infoRobotLayout = new QGridLayout();
     optionsLayout = new QGridLayout(); 
     rosSpinThread = new ros_thread();
+    plotNodeThread = new plot_node_thread();
     loadConfigFileButton = new QPushButton("Load Configuration File");
     appNameLabel = new QLabel("Master Node (IELE3338)");
     groupNumberLabel = new QLabel("Group Number");
@@ -182,6 +183,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     
     //Signals and slots connection
     connect(startTestButton, SIGNAL(clicked()), this, SLOT(startTestButtonSlot()));
+    connect(graphStartButton, SIGNAL(clicked()), this, SLOT(graphStartButtonSlot()));
     connect(this, SIGNAL(startServiceSignal(geometry_msgs::Pose, geometry_msgs::Pose, int, QVector<master_msgs_iele3338::Obstacle>*)), rosSpinThread, SLOT(startServiceSlot(geometry_msgs::Pose, geometry_msgs::Pose, int, QVector<master_msgs_iele3338::Obstacle>*)));
     connect(readyCheckBox, SIGNAL(stateChanged(int)), this, SLOT(readyCheckBoxSlot(int)));
     connect(groupNumberComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(groupNumberChangedSlot(int)));
@@ -310,6 +312,11 @@ void MasterWindow::startTestButtonSlot()
      testRemainingTimer->stop();
      readyCheckBox->setEnabled(true);
   } 
+}
+
+void MasterWindow::graphStartButtonSlot()
+{
+    plotNodeThread->start();
 }
 
 void MasterWindow::readyCheckBoxSlot(int checkBoxState)

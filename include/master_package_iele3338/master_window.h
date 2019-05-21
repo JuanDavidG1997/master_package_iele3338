@@ -46,6 +46,7 @@
 #include "ros/package.h"
 #include "ros/ros.h"
 #include "master_package_iele3338/ros_thread.h"
+#include "master_package_iele3338/plot_node_thread.h"
 #include "master_msgs_iele3338/Obstacle.h"
 #include "master_msgs_iele3338/Covariance.h"
 #include <QHostAddress>
@@ -75,6 +76,7 @@ private:
     QPlainTextEdit *console;
     QCheckBox *readyCheckBox;
     ros_thread *rosSpinThread;
+    plot_node_thread *plotNodeThread;
     QFile *configurationFile;
     int numberOfGroups, numberObstacles, numberOfStartPoints, numberOfGoalPoints;
     QStringList groupNames, obstaclesNames, startPointNames, goalPointNames;
@@ -94,6 +96,7 @@ private:
     
 private slots:
   void startTestButtonSlot();
+  void graphStartButtonSlot();
   void readyCheckBoxSlot(int checkBoxState);
   void groupNumberChangedSlot(int index);
   void initializeCounterTimerSlot();

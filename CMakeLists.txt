@@ -38,11 +38,13 @@ set(MASTER-PACKAGE-IELE3338-SRCS
   src/main.cpp
   src/master_window.cpp
   src/ros_thread.cpp
+  src/plot_node_thread.cpp
 )
 
 set(MASTER-PACKAGE-IELE3338-HDRS
   include/master_package_iele3338/master_window.h
   include/master_package_iele3338/ros_thread.h
+  include/master_package_iele3338/plot_node_thread.h
 )
 
 qt5_wrap_cpp(MASTER-PACKAGE-IELE3338-MOCS ${MASTER-PACKAGE-IELE3338-HDRS})
