@@ -62,7 +62,7 @@ private:
 signals:
   void ipAddressSignal(QString address);
   void robotPositionSignal(double x, double y, double theta); 
-  void robotUncertaintySignal(float sigma11, float sigma12, float sigma13, float sigma21, float sigma22, float sigma23, float sigma31, float sigma32, float sigma33); 
+  void robotUncertaintySignal(double sigma11, double sigma12, double sigma13, double sigma21, double sigma22, double sigma23, double sigma31, double sigma32, double sigma33); 
   
 private slots:
   void startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs::Pose goalPoint, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);

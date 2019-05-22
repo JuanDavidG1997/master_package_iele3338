@@ -41,22 +41,22 @@ MasterWindow::MasterWindow(int xw, int yw)
     goalPointLabel = new QLabel("Goal Point");
     obstaclesLabel = new QLabel("Obstacles");
     robotPosLabel = new QLabel("Robot Pose");
-    robotPosThetaLabel = new QLabel("");
-    robotPosXLabel = new QLabel(); 
-    robotPosYLabel = new QLabel("");
+    robotPosThetaLabel = new QLabel("-");
+    robotPosXLabel = new QLabel("-"); 
+    robotPosYLabel = new QLabel("-");
     xLabel = new QLabel("x"); 
     yLabel = new QLabel("y"); 
-    thetaLabel = new QLabel("theta"); 
-    covarianceLabel = new QLabel("Covariance Matrix"); 
-    covariance_1_1Label = new QLabel(); 
-    covariance_1_2Label = new QLabel(); 
-    covariance_1_3Label = new QLabel(); 
-    covariance_2_1Label = new QLabel(); 
-    covariance_2_2Label = new QLabel(); 
-    covariance_2_3Label = new QLabel(); 
-    covariance_3_1Label = new QLabel(); 
-    covariance_3_2Label = new QLabel(); 
-    covariance_3_3Label = new QLabel(); 
+    thetaLabel = new QLabel(QChar(0xB8, 0x03)); 
+    covarianceLabel = new QLabel("Covariance"); 
+    covariance_1_1Label = new QLabel("-"); 
+    covariance_1_2Label = new QLabel("-"); 
+    covariance_1_3Label = new QLabel("-"); 
+    covariance_2_1Label = new QLabel("-"); 
+    covariance_2_2Label = new QLabel("-"); 
+    covariance_2_3Label = new QLabel("-"); 
+    covariance_3_1Label = new QLabel("-"); 
+    covariance_3_2Label = new QLabel("-"); 
+    covariance_3_3Label = new QLabel("-"); 
     groupNumberComboBox = new QComboBox();
     startPointComboBox = new QComboBox();
     goalPointComboBox = new QComboBox();
@@ -116,6 +116,16 @@ MasterWindow::MasterWindow(int xw, int yw)
     infoLayout->addWidget(robotIpAddressLabel, 1, 0);
     
     //Add widget to InfoRobot Layout
+    covariance_1_1Label->setAlignment(Qt::AlignCenter);
+    covariance_1_2Label->setAlignment(Qt::AlignCenter);
+    covariance_1_3Label->setAlignment(Qt::AlignCenter);
+    covariance_2_1Label->setAlignment(Qt::AlignCenter);
+    covariance_2_2Label->setAlignment(Qt::AlignCenter);
+    covariance_2_3Label->setAlignment(Qt::AlignCenter);
+    covariance_3_1Label->setAlignment(Qt::AlignCenter);
+    covariance_3_2Label->setAlignment(Qt::AlignCenter);
+    covariance_3_3Label->setAlignment(Qt::AlignCenter);
+    
     infoRobotLayout->addWidget(robotPosLabel, 0, 0); 
     infoRobotLayout->addWidget(xLabel, 1, 0);
     infoRobotLayout->addWidget(yLabel, 1, 1);
@@ -191,6 +201,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     connect(testRemainingTimer, SIGNAL(timeout()), this, SLOT(initializeCounterTimerSlot()));
     connect(rosSpinThread, SIGNAL(ipAddressSignal(QString)), this, SLOT(ipAddressSlot(QString)));
     connect(rosSpinThread, SIGNAL(robotPositionSignal(double, double, double)), this, SLOT(updateRobotPoseSlot(double, double, double)));
+    connect(rosSpinThread, SIGNAL(robotUncertaintySignal(double, double, double, double, double, double, double, double, double)), this, SLOT(updateRobotUncertaintySlot(double, double, double,double, double, double,double, double, double)));
     
     //Obstacle Example
     obstacleExample.position.position.x = 10;
@@ -368,22 +379,22 @@ void MasterWindow::ipAddressSlot(QString address)
 
 void MasterWindow::updateRobotPoseSlot(double x, double y, double theta)
 {
-    robotPosXLabel->setText(QString::number(x)); 
-    robotPosYLabel->setText(QString::number(y)); 
-    robotPosThetaLabel->setText(QString::number(theta)); 
+    robotPosXLabel->setText(QString::number(x/10, 'f', 1)+" cm"); 
+    robotPosYLabel->setText(QString::number(y/10, 'f', 1)+" cm"); 
+    robotPosThetaLabel->setText(QString::number(theta, 'f', 2)+" rad"); 
 }
 
-void MasterWindow::updateRobotUncertaintySlot(float sigma11, float sigma12, float sigma13, float sigma21, float sigma22, float sigma23, float sigma31, float sigma32, float sigma33)
+void MasterWindow::updateRobotUncertaintySlot(double sigma11, double sigma12, double sigma13, double sigma21, double sigma22, double sigma23, double sigma31, double sigma32, double sigma33)
 {
-    covariance_1_1Label->setText(QString::number(sigma11)); 
-    covariance_1_2Label->setText(QString::number(sigma12)); 
-    covariance_1_3Label->setText(QString::number(sigma13)); 
-    covariance_2_1Label->setText(QString::number(sigma21));
-    covariance_2_2Label->setText(QString::number(sigma22)); 
-    covariance_2_3Label->setText(QString::number(sigma23)); 
-    covariance_3_1Label->setText(QString::number(sigma31));
-    covariance_3_2Label->setText(QString::number(sigma32)); 
-    covariance_3_3Label->setText(QString::number(sigma33)); 
+    covariance_1_1Label->setText(QString::number(sigma11, 'f', 0)); 
+    covariance_1_2Label->setText(QString::number(sigma12, 'f', 0)); 
+    covariance_1_3Label->setText(QString::number(sigma13, 'f', 0)); 
+    covariance_2_1Label->setText(QString::number(sigma21, 'f', 0));
+    covariance_2_2Label->setText(QString::number(sigma22, 'f', 0)); 
+    covariance_2_3Label->setText(QString::number(sigma23, 'f', 0)); 
+    covariance_3_1Label->setText(QString::number(sigma31, 'f', 0));
+    covariance_3_2Label->setText(QString::number(sigma32, 'f', 0)); 
+    covariance_3_3Label->setText(QString::number(sigma33, 'f', 0)); 
 }
 
 
