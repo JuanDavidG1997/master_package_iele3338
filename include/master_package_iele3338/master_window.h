@@ -42,6 +42,7 @@
 #include <QLCDNumber>
 #include <QTime>
 #include <QTimer>
+#include <QChar>
 #include <iostream>
 #include "ros/package.h"
 #include "ros/ros.h"
@@ -102,7 +103,7 @@ private slots:
   void initializeCounterTimerSlot();
   void ipAddressSlot(QString address);
   void updateRobotPoseSlot(double x, double y, double theta); 
-  void updateRobotUncertaintySlot(float sigma11, float sigma12, float sigma13, float sigma21, float sigma22, float sigma23, float sigma31, float sigma32, float sigma33); 
+  void updateRobotUncertaintySlot(double sigma11, double sigma12, double sigma13, double sigma21, double sigma22, double sigma23, double sigma31, double sigma32, double sigma33); 
   
 signals:
   void startServiceSignal(geometry_msgs::Pose start, geometry_msgs::Pose goal, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);
