@@ -85,6 +85,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     setCentralWidget(window);
     window->setLayout(mainLayout);
     this->setFixedSize(QSize(xw, yw));
+    this->setWindowIcon(QIcon(QString::fromStdString(ros::package::getPath("master_package_iele3338")) + "/resources/logo_uniandes.jpg"));
     setWindowTitle("Master Package IELE3338");
     
     // Add widget to Main Layout
