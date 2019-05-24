@@ -41,6 +41,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     startPointLabel = new QLabel("Start Point");
     goalPointLabel = new QLabel("Goal Point");
     obstaclesLabel = new QLabel("Obstacles");
+    passwordLabel = new QLabel("Password");
     robotPosLabel = new QLabel("Robot Pose");
     robotPosThetaLabel = new QLabel("-");
     robotPosXLabel = new QLabel("-"); 
@@ -68,6 +69,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     masterIpAddressLabel = new QLabel("Master IP Address ");
     robotIpAddressLabel = new QLabel("Robot IP Adress ");
     console = new QPlainTextEdit();
+    passwordTextEdit = new QTextEdit();
     configurationFile = new QFile();
     obstaclesVector = new QVector<master_msgs_iele3338::Obstacle>();
     startPointsVector = new QVector<geometry_msgs::Pose>();
@@ -109,8 +111,10 @@ MasterWindow::MasterWindow(int xw, int yw)
     configurationLayout->addWidget(goalPointComboBox, 2, 1);
     configurationLayout->addWidget(obstaclesLabel, 3, 0);
     configurationLayout->addWidget(obstacleList, 3, 1);
-    configurationLayout->addWidget(readyCheckBox, 4, 0);
-    configurationLayout->addWidget(startTestButton, 4, 1);
+    configurationLayout->addWidget(passwordLabel, 4, 0);
+    configurationLayout->addWidget(passwordTextEdit, 4, 1);
+    configurationLayout->addWidget(readyCheckBox, 5, 0);
+    configurationLayout->addWidget(startTestButton, 5, 1);
     
     //Add widgets to Info Layout
     infoLayout->addWidget(masterIpAddressLabel, 0, 0);
@@ -145,15 +149,11 @@ MasterWindow::MasterWindow(int xw, int yw)
     infoRobotLayout->addWidget(covariance_3_2Label, 6, 1); 
     infoRobotLayout->addWidget(covariance_3_3Label, 6, 2); 
     
-    
-    //Add widgets to Test Layout
-    
     //Objects initialization
     obstacleList->setSelectionMode(QAbstractItemView::ExtendedSelection);    
-    //obstacleList->setFixedSize(QSize(0.5*xw, 0.3*yw));
+    passwordTextEdit->setFixedSize(QSize(obstacleList->width(), 0.04*yw));
     readyCheckBox->setChecked(false);
     startTestButton->setEnabled(false);
-    //startTestButton->setFixedSize(QSize(0.75*xw, 30));
     loadConfigFileButton->setEnabled(true);
     QPalette p = console->palette();
     p.setColor(QPalette::Base, QColor(0, 0, 0));
@@ -167,15 +167,16 @@ MasterWindow::MasterWindow(int xw, int yw)
     appNameLabel->setFont(f);
     testRemainingTimerLCD->setSegmentStyle(QLCDNumber::Filled);
     mainLayout->setRowStretch(0, 1);
-    mainLayout->setRowStretch(1, 3);
+    mainLayout->setRowStretch(1, 5);
     mainLayout->setRowStretch(2, 2);
     optionsLayout->setColumnStretch(0, 2);
     optionsLayout->setColumnStretch(1, 1);
-    configurationLayout->setRowStretch(0, 1);
-    configurationLayout->setRowStretch(1, 1);
-    configurationLayout->setRowStretch(2, 1);
-    configurationLayout->setRowStretch(3, 1);
-    configurationLayout->setRowStretch(4, 3);
+    configurationLayout->setRowStretch(0, 4);
+    configurationLayout->setRowStretch(1, 4);
+    configurationLayout->setRowStretch(2, 4);
+    configurationLayout->setRowStretch(3, 10);
+    configurationLayout->setRowStretch(4, 1);
+    configurationLayout->setRowStretch(5, 2);
     QString time = testRemainingTime->toString();
     testRemainingTimerLCD->display(time);
     configurationFileName = QString::fromStdString(ros::package::getPath("master_package_iele3338")) + "/.test_configuration_file.conf";
@@ -203,21 +204,6 @@ MasterWindow::MasterWindow(int xw, int yw)
     connect(rosSpinThread, SIGNAL(ipAddressSignal(QString)), this, SLOT(ipAddressSlot(QString)));
     connect(rosSpinThread, SIGNAL(robotPositionSignal(double, double, double)), this, SLOT(updateRobotPoseSlot(double, double, double)));
     connect(rosSpinThread, SIGNAL(robotUncertaintySignal(double, double, double, double, double, double, double, double, double)), this, SLOT(updateRobotUncertaintySlot(double, double, double,double, double, double,double, double, double)));
-    
-    //Obstacle Example
-    obstacleExample.position.position.x = 10;
-    obstacleExample.position.position.y = 10;
-    obstacleExample.radius = 2;
-    
-    covarianceExample.sigma11 = 1.0;
-    covarianceExample.sigma12 = 1.0;
-    covarianceExample.sigma13 = 1.0;
-    covarianceExample.sigma21 = 1.0;
-    covarianceExample.sigma22 = 1.0;
-    covarianceExample.sigma23 = 1.0;
-    covarianceExample.sigma31 = 1.0;
-    covarianceExample.sigma32 = 1.0;
-    covarianceExample.sigma33 = 1.0;
     
     loadConfigurationFile();
     rosSpinThread->start();

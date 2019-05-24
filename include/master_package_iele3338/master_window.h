@@ -28,6 +28,7 @@
 #include <QGridLayout>
 #include <QDesktopWidget>
 #include <QPlainTextEdit>
+#include <QTextEdit>
 #include <QTimer>
 #include <QLineEdit>
 #include <QComboBox>
@@ -71,10 +72,15 @@ private:
     const int oneSecondTimeMilisecs = 1000;
     QGridLayout *mainLayout, *configurationLayout, *infoLayout, *headerLayout, *infoRobotLayout, *optionsLayout;
     QPushButton *startTestButton, *loadConfigFileButton, *graphStartButton;
-    QLabel *appNameLabel, *groupNumberLabel, *startPointLabel, *goalPointLabel, *obstaclesLabel, *masterIpAddressLabel, *robotIpAddressLabel, *robotPosLabel, *robotPosXLabel, *robotPosYLabel, *robotPosThetaLabel, *covarianceLabel, *covariance_1_1Label, *covariance_1_2Label, *covariance_1_3Label, *covariance_2_1Label, *covariance_2_2Label, *covariance_2_3Label, *covariance_3_1Label, *covariance_3_2Label, *covariance_3_3Label, *xLabel, *yLabel, *thetaLabel;
+    QLabel *appNameLabel, *groupNumberLabel, *startPointLabel, *goalPointLabel, *obstaclesLabel, *masterIpAddressLabel,
+    *robotIpAddressLabel, *robotPosLabel, *robotPosXLabel, *robotPosYLabel, *robotPosThetaLabel, *covarianceLabel,
+    *covariance_1_1Label, *covariance_1_2Label, *covariance_1_3Label, *covariance_2_1Label, *covariance_2_2Label,
+    *covariance_2_3Label, *covariance_3_1Label, *covariance_3_2Label, *covariance_3_3Label, *xLabel, *yLabel, *thetaLabel, 
+    *passwordLabel;
     QComboBox *groupNumberComboBox, *startPointComboBox, *goalPointComboBox;
     QListWidget *obstacleList;
     QPlainTextEdit *console;
+    QTextEdit *passwordTextEdit;
     QCheckBox *readyCheckBox;
     ros_thread *rosSpinThread;
     plot_node_thread *plotNodeThread;

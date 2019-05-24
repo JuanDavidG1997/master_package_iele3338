@@ -18,12 +18,6 @@ find_package(catkin REQUIRED COMPONENTS
   Qt5Network
 )
 
-generate_messages(
-  DEPENDENCIES
-  geometry_msgs
-  master_msgs_iele3338
-)
-
 catkin_package(
    CATKIN_DEPENDS roscpp rospy geometry_msgs message_runtime master_msgs_iele3338
    DEPENDS Qt5Widgets Qt5Gui Qt5Core Qt5Network
