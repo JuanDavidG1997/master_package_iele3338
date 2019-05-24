@@ -22,6 +22,7 @@
 
 MasterWindow::MasterWindow(int xw, int yw)
 {
+    setWindowFlags(Qt::Widget | Qt::MSWindowsFixedSizeDialogHint);
     char **argv;
     int argc = 0;  
     ros::init(argc, argv, "master_node");
@@ -81,7 +82,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     //Central Widget
     setCentralWidget(window);
     window->setLayout(mainLayout);
-    window->setFixedSize(QSize(xw, yw));
+    this->setFixedSize(QSize(xw, yw));
     setWindowTitle("Master Package IELE3338");
     
     // Add widget to Main Layout
