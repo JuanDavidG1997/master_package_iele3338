@@ -46,6 +46,10 @@ void ros_thread::setGroupNumber(int group)
     groupNumber = group;
 }
 
+void ros_thread::setPassword(QString newPassword)
+{
+    password = newPassword.toInt();
+}
 
 bool ros_thread::AckService_callback(master_msgs_iele3338::AckService::Request  &req,
 				     master_msgs_iele3338::AckService::Response &res)
@@ -63,7 +67,7 @@ bool ros_thread::AckService_callback(master_msgs_iele3338::AckService::Request  
 bool ros_thread::EndService_callback(master_msgs_iele3338::EndService::Request  &req,
 				     master_msgs_iele3338::EndService::Response &res)
 {
-    if ((int)req.password == 1234) 
+    if ((int)req.password == password) 
       res.correct = 1;
     else
       res.correct = 0;

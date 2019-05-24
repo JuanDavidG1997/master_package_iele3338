@@ -41,6 +41,7 @@ public:
   ~ros_thread();
   void run();
   void setGroupNumber(int groupNumber);
+  void setPassword(QString newPassword);
 
 private:
   bool AckService_callback(master_msgs_iele3338::AckService::Request  &req,
@@ -57,7 +58,7 @@ private:
   ros::Subscriber posSub; 
   ros::Subscriber covSub; 
   master_msgs_iele3338::StartService srv;
-  int groupNumber;
+  int groupNumber, password;
   
 signals:
   void ipAddressSignal(QString address);

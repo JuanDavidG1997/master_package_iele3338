@@ -67,8 +67,8 @@ public:
     void loadConfigurationFile();
     
 private:
-    const int initialTestTimeMins = 1;
-    const int initialTestTimeSecs = 0;
+    const int initialTestTimeMins = 2;
+    const int initialTestTimeSecs = 30;
     const int oneSecondTimeMilisecs = 1000;
     QGridLayout *mainLayout, *configurationLayout, *infoLayout, *headerLayout, *infoRobotLayout, *optionsLayout;
     QPushButton *startTestButton, *loadConfigFileButton, *graphStartButton;
@@ -87,7 +87,7 @@ private:
     QFile *configurationFile;
     int numberOfGroups, numberObstacles, numberOfStartPoints, numberOfGoalPoints;
     QStringList groupNames, obstaclesNames, startPointNames, goalPointNames;
-    QString configurationFileName;
+    QString configurationFileName, password;
     QLCDNumber *testRemainingTimerLCD;
     QTime *testRemainingTime;
     QTimer *testRemainingTimer;
@@ -109,7 +109,8 @@ private slots:
   void initializeCounterTimerSlot();
   void ipAddressSlot(QString address);
   void updateRobotPoseSlot(double x, double y, double theta); 
-  void updateRobotUncertaintySlot(double sigma11, double sigma12, double sigma13, double sigma21, double sigma22, double sigma23, double sigma31, double sigma32, double sigma33); 
+  void updateRobotUncertaintySlot(double sigma11, double sigma12, double sigma13, double sigma21, double sigma22, double sigma23, double sigma31, double sigma32, double sigma33);
+  void updatePasswordSlot();
   
 signals:
   void startServiceSignal(geometry_msgs::Pose start, geometry_msgs::Pose goal, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);

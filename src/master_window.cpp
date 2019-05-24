@@ -152,6 +152,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     //Objects initialization
     obstacleList->setSelectionMode(QAbstractItemView::ExtendedSelection);    
     passwordTextEdit->setFixedSize(QSize(obstacleList->width(), 0.04*yw));
+    passwordTextEdit->setText("1234");
     readyCheckBox->setChecked(false);
     startTestButton->setEnabled(false);
     loadConfigFileButton->setEnabled(true);
@@ -180,6 +181,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     QString time = testRemainingTime->toString();
     testRemainingTimerLCD->display(time);
     configurationFileName = QString::fromStdString(ros::package::getPath("master_package_iele3338")) + "/.test_configuration_file.conf";
+    password = passwordTextEdit->toPlainText();
     
     const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
     for (const QHostAddress &address: QNetworkInterface::allAddresses())
@@ -204,6 +206,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     connect(rosSpinThread, SIGNAL(ipAddressSignal(QString)), this, SLOT(ipAddressSlot(QString)));
     connect(rosSpinThread, SIGNAL(robotPositionSignal(double, double, double)), this, SLOT(updateRobotPoseSlot(double, double, double)));
     connect(rosSpinThread, SIGNAL(robotUncertaintySignal(double, double, double, double, double, double, double, double, double)), this, SLOT(updateRobotUncertaintySlot(double, double, double,double, double, double,double, double, double)));
+    connect(passwordTextEdit, SIGNAL(textChanged()), this, SLOT(updatePasswordSlot()));
     
     loadConfigurationFile();
     rosSpinThread->start();
@@ -328,6 +331,7 @@ void MasterWindow::readyCheckBoxSlot(int checkBoxState)
       startPointComboBox->setEnabled(false);
       goalPointComboBox->setEnabled(false);
       obstacleList->setEnabled(false);
+      passwordTextEdit->setEnabled(false);
     }
     else
     {
@@ -336,6 +340,7 @@ void MasterWindow::readyCheckBoxSlot(int checkBoxState)
       startPointComboBox->setEnabled(true);
       goalPointComboBox->setEnabled(true);
       obstacleList->setEnabled(true);
+      passwordTextEdit->setEnabled(true);
     }
 }
 
@@ -384,4 +389,8 @@ void MasterWindow::updateRobotUncertaintySlot(double sigma11, double sigma12, do
     covariance_3_3Label->setText(QString::number(sigma33, 'f', 0)); 
 }
 
-
+void MasterWindow::updatePasswordSlot()
+{
+  password = passwordTextEdit->toPlainText();
+  rosSpinThread->setPassword(password);
+}
