@@ -204,7 +204,9 @@ MasterWindow::MasterWindow(int xw, int yw)
     connect(readyCheckBox, SIGNAL(stateChanged(int)), this, SLOT(readyCheckBoxSlot(int)));
     connect(groupNumberComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(groupNumberChangedSlot(int)));
     connect(testRemainingTimer, SIGNAL(timeout()), this, SLOT(initializeCounterTimerSlot()));
-    connect(rosSpinThread, SIGNAL(ipAddressSignal(QString)), this, SLOT(ipAddressSlot(QString)));
+    connect(rosSpinThread, SIGNAL(ackServiceSignal(int, QString)), this, SLOT(ackServiceSlot(int, QString)));
+    connect(rosSpinThread, SIGNAL(endServiceSignal(int)), this, SLOT(endServiceSlot(int)));
+    connect(rosSpinThread, SIGNAL(startServiceSignal(bool)), this, SLOT(startServiceSlot(bool)));
     connect(rosSpinThread, SIGNAL(robotPositionSignal(double, double, double)), this, SLOT(updateRobotPoseSlot(double, double, double)));
     connect(rosSpinThread, SIGNAL(robotUncertaintySignal(double, double, double, double, double, double, double, double, double)), this, SLOT(updateRobotUncertaintySlot(double, double, double,double, double, double,double, double, double)));
     connect(passwordTextEdit, SIGNAL(textChanged()), this, SLOT(updatePasswordSlot()));
@@ -222,7 +224,7 @@ void MasterWindow::loadConfigurationFile()
 {
     configurationFile->setFileName(configurationFileName);
     if (!configurationFile->open(QIODevice::ReadOnly | QIODevice::Text))
-      ROS_ERROR("Configuration file not found");
+      printError("Configuration file not found");
     else
     {
       QTextStream in(configurationFile);
@@ -285,8 +287,18 @@ void MasterWindow::loadConfigurationFile()
       for (int i = 0;i < numberOfGoalPoints;i++)
 	goalPointComboBox->addItem(QString::number(i+1) + ": " + goalPointNames.at(i));
       
-      ROS_INFO("Configuration file succesfully loaded");
+      printInfo("Configuration file succesfully loaded");
     }
+}
+
+void MasterWindow::printInfo(QString info)
+{
+    console->appendPlainText("[INFO]: " + info);
+}
+
+void MasterWindow::printError(QString error)
+{
+    console->appendPlainText("[ERROR]: " + error);
 }
 
 void MasterWindow::startTestButtonSlot()
@@ -308,12 +320,14 @@ void MasterWindow::startTestButtonSlot()
     testRemainingTimer->start(oneSecondTimeMilisecs);
     readyCheckBox->setEnabled(false);
     startTestButton->setText("Stop");
+    printInfo("Started test with group " + QString::number(groupNumberComboBox->currentIndex()+1));
   }
   else if (startTestButton->text() == "Stop")
   {
      startTestButton->setText("Start");
      testRemainingTimer->stop();
      readyCheckBox->setEnabled(true);
+     printInfo("Test stopped");
   } 
 }
 
@@ -365,9 +379,23 @@ void MasterWindow::initializeCounterTimerSlot()
     }
 }
 
-void MasterWindow::ipAddressSlot(QString address)
+void MasterWindow::ackServiceSlot(int groupNumber, QString address)
 {
   robotIpAddressLabel->setText("Robot IP Adress: " + address);
+  printInfo("Group " + QString::number(groupNumber) + " is requesting ack_service");
+}
+
+void MasterWindow::endServiceSlot(int aPassword)
+{
+  printInfo("Password received: " + QString::number(aPassword));
+}
+
+void MasterWindow::startServiceSlot(bool serviceCalled)
+{
+    if (serviceCalled)
+      printInfo("Start service client called");
+    else
+      printError("Failed to call start service");
 }
 
 void MasterWindow::updateRobotPoseSlot(double x, double y, double theta)

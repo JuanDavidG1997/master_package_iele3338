@@ -65,6 +65,8 @@ public:
     MasterWindow(int xw, int yw);
     virtual ~MasterWindow();
     void loadConfigurationFile();
+    void printInfo(QString info);
+    void printError(QString error);
     
 private:
     const int initialTestTimeMins = 2;
@@ -107,7 +109,9 @@ private slots:
   void readyCheckBoxSlot(int checkBoxState);
   void groupNumberChangedSlot(int index);
   void initializeCounterTimerSlot();
-  void ipAddressSlot(QString address);
+  void ackServiceSlot(int groupNumber, QString address);
+  void endServiceSlot(int aPassword);
+  void startServiceSlot(bool serviceCalled);
   void updateRobotPoseSlot(double x, double y, double theta); 
   void updateRobotUncertaintySlot(double sigma11, double sigma12, double sigma13, double sigma21, double sigma22, double sigma23, double sigma31, double sigma32, double sigma33);
   void updatePasswordSlot();

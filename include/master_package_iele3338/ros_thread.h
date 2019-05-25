@@ -61,9 +61,11 @@ private:
   int groupNumber, password;
   
 signals:
-  void ipAddressSignal(QString address);
+  void ackServiceSignal(int groupNumber, QString address);
+  void endServiceSignal(int password);
+  void startServiceSignal(bool serviceCalled);
   void robotPositionSignal(double x, double y, double theta); 
-  void robotUncertaintySignal(double sigma11, double sigma12, double sigma13, double sigma21, double sigma22, double sigma23, double sigma31, double sigma32, double sigma33); 
+  void robotUncertaintySignal(double sigma11, double sigma12, double sigma13, double sigma21, double sigma22, double sigma23, double sigma31, double sigma32, double sigma33);
   
 private slots:
   void startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs::Pose goalPoint, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);
