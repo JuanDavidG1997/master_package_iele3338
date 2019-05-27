@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     QApplication app(argc, argv);
     QDesktopWidget dw;
     int x_window=dw.width()*0.5;
-    int y_window=dw.height()*0.65;
+    int y_window=dw.height()*0.75;
     MasterWindow masterWindow(x_window, y_window);
     masterWindow.setGeometry(
     QStyle::alignedRect(

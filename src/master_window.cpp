@@ -152,7 +152,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     
     //Objects initialization
     obstacleList->setSelectionMode(QAbstractItemView::ExtendedSelection);    
-    passwordTextEdit->setFixedSize(QSize(obstacleList->width(), 0.04*yw));
+    passwordTextEdit->setFixedSize(200, 0.04*yw);
     passwordTextEdit->setText("1234");
     readyCheckBox->setChecked(false);
     startTestButton->setEnabled(false);
