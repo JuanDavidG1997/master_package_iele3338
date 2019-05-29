@@ -205,7 +205,8 @@ MasterWindow::MasterWindow(int xw, int yw)
     connect(groupNumberComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(groupNumberChangedSlot(int)));
     connect(testRemainingTimer, SIGNAL(timeout()), this, SLOT(initializeCounterTimerSlot()));
     connect(rosSpinThread, SIGNAL(ackServiceSignal(int, QString)), this, SLOT(ackServiceSlot(int, QString)));
-    connect(rosSpinThread, SIGNAL(endServiceSignal(int)), this, SLOT(endServiceSlot(int)));
+    connect(rosSpinThread, SIGNAL(endServiceSignal(int, int)), this, SLOT(endServiceSlot(int, int)));
+    connect(rosSpinThread, SIGNAL(endServiceErrorSignal()), this, SLOT(endServiceErrorSlot()));
     connect(rosSpinThread, SIGNAL(startServiceSignal(bool)), this, SLOT(startServiceSlot(bool)));
     connect(rosSpinThread, SIGNAL(robotPositionSignal(double, double, double)), this, SLOT(updateRobotPoseSlot(double, double, double)));
     connect(rosSpinThread, SIGNAL(robotUncertaintySignal(double, double, double, double, double, double, double, double, double)), this, SLOT(updateRobotUncertaintySlot(double, double, double,double, double, double,double, double, double)));
@@ -213,6 +214,7 @@ MasterWindow::MasterWindow(int xw, int yw)
     
     loadConfigurationFile();
     rosSpinThread->start();
+    updatePasswordSlot();
 }
 
 MasterWindow::~MasterWindow()
@@ -385,9 +387,27 @@ void MasterWindow::ackServiceSlot(int groupNumber, QString address)
   printInfo("Group " + QString::number(groupNumber) + " is requesting ack_service");
 }
 
-void MasterWindow::endServiceSlot(int aPassword)
+void MasterWindow::endServiceSlot(int aPassword, int aCorrect)
 {
-  printInfo("Password received: " + QString::number(aPassword));
+  
+  if (aCorrect == 1)
+  {
+    printInfo("Received correct password "+QString::number(aPassword)+": Test successfully completed");
+    startTestButton->setText("Start");
+    testRemainingTimer->stop();
+    readyCheckBox->setEnabled(true);
+    printInfo("Test stopped");
+  }
+  else
+  {
+    printInfo("Incorrect password received: " + QString::number(aPassword));
+  }
+  
+}
+
+void MasterWindow::endServiceErrorSlot()
+{
+  printInfo("Password received outside time window");
 }
 
 void MasterWindow::startServiceSlot(bool serviceCalled)

@@ -31,7 +31,8 @@ ros_thread::ros_thread()
     groupNumber = -1;
     readyReceivePassword = true;
     passwordTimer->setSingleShot(true);
-    connect(passwordTimer, SIGNAL(timeou()), this, SLOT(passwordTimerSlot()));
+    connect(passwordTimer, SIGNAL(timeout()), this, SLOT(passwordTimerSlot()));
+    connect(this, SIGNAL(startTimerSignal()), this, SLOT(startTimerSlot()));
 }
 
 ros_thread::~ros_thread()
@@ -75,16 +76,17 @@ bool ros_thread::EndService_callback(master_msgs_iele3338::EndService::Request  
     if ((int)req.password == password)
     {
       res.correct = 1;
-      readyReceivePassword = false;
-      passwordTimer->start(2000);
     }
     else if ((int)req.password != password)
     {
       res.correct = 0;
     }
-    emit endServiceSignal((int)req.password);
+    readyReceivePassword = false;
+    emit startTimerSignal();
+    emit endServiceSignal((int)req.password, (int)res.correct);
     return true;
   }
+  emit endServiceErrorSignal();
   return false;
     
 }
@@ -117,4 +119,9 @@ void ros_thread::startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs:
 void ros_thread::passwordTimerSlot()
 {
     readyReceivePassword = true;
+}
+
+void ros_thread::startTimerSlot()
+{
+    passwordTimer->start(2000);
 }

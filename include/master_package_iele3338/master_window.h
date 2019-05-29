@@ -110,7 +110,8 @@ private slots:
   void groupNumberChangedSlot(int index);
   void initializeCounterTimerSlot();
   void ackServiceSlot(int groupNumber, QString address);
-  void endServiceSlot(int aPassword);
+  void endServiceSlot(int aPassword, int aCorrect);
+  void endServiceErrorSlot();
   void startServiceSlot(bool serviceCalled);
   void updateRobotPoseSlot(double x, double y, double theta); 
   void updateRobotUncertaintySlot(double sigma11, double sigma12, double sigma13, double sigma21, double sigma22, double sigma23, double sigma31, double sigma32, double sigma33);

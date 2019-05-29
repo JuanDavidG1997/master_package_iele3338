@@ -32,6 +32,7 @@
 #include "master_msgs_iele3338/StartService.h"
 #include "geometry_msgs/Pose.h"
 #include "master_msgs_iele3338/Covariance.h"
+#include <stdio.h>
 
 class ros_thread : public QThread
 {
@@ -65,14 +66,17 @@ private:
   
 signals:
   void ackServiceSignal(int groupNumber, QString address);
-  void endServiceSignal(int password);
+  void endServiceSignal(int password, int correct);
+  void endServiceErrorSignal();
   void startServiceSignal(bool serviceCalled);
   void robotPositionSignal(double x, double y, double theta); 
   void robotUncertaintySignal(double sigma11, double sigma12, double sigma13, double sigma21, double sigma22, double sigma23, double sigma31, double sigma32, double sigma33);
+  void startTimerSignal();
   
 private slots:
   void startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs::Pose goalPoint, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);
   void passwordTimerSlot();
+  void startTimerSlot();
 };
 
 #endif // ROS_THREAD_H
