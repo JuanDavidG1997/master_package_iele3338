@@ -22,12 +22,16 @@
 
 ros_thread::ros_thread()
 {
+    passwordTimer = new QTimer();
     service_ack = n.advertiseService("ack_service", &ros_thread::AckService_callback, this);
     service_end = n.advertiseService("end_service", &ros_thread::EndService_callback, this);
     start_client = n.serviceClient<master_msgs_iele3338::StartService>("start_service");
     posSub = n.subscribe("robot_position", 10, &ros_thread::robotPositionCallback, this); 
     covSub = n.subscribe("robot_uncertainty", 100, &ros_thread::robotUncertaintyCallback, this); 
     groupNumber = -1;
+    readyReceivePassword = true;
+    passwordTimer->setSingleShot(true);
+    connect(passwordTimer, SIGNAL(timeou()), this, SLOT(passwordTimerSlot()));
 }
 
 ros_thread::~ros_thread()
@@ -66,12 +70,23 @@ bool ros_thread::AckService_callback(master_msgs_iele3338::AckService::Request  
 bool ros_thread::EndService_callback(master_msgs_iele3338::EndService::Request  &req,
 				     master_msgs_iele3338::EndService::Response &res)
 {
-    if ((int)req.password == password) 
+  if (readyReceivePassword)
+  {
+    if ((int)req.password == password)
+    {
       res.correct = 1;
-    else
+      readyReceivePassword = false;
+      passwordTimer->start(2000);
+    }
+    else if ((int)req.password != password)
+    {
       res.correct = 0;
+    }
     emit endServiceSignal((int)req.password);
     return true;
+  }
+  return false;
+    
 }
 
 void ros_thread::robotPositionCallback(const geometry_msgs::Pose& msg)
@@ -83,7 +98,6 @@ void ros_thread::robotUncertaintyCallback(const master_msgs_iele3338::Covariance
 {
     emit robotUncertaintySignal(msg.sigma11, msg.sigma12, msg.sigma13, msg.sigma21, msg.sigma22, msg.sigma23, msg.sigma31, msg.sigma32, msg.sigma33); 
 }
-
 
 void ros_thread::startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs::Pose goalPoint, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles)
 {
@@ -98,4 +112,9 @@ void ros_thread::startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs:
     if (start_client.call(srv) || (numberObstacles == 0))
       serviceCalled = true;
     emit startServiceSignal(serviceCalled);
+}
+
+void ros_thread::passwordTimerSlot()
+{
+    readyReceivePassword = true;
 }

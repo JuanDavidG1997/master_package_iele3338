@@ -25,6 +25,7 @@
 #include <QThread>
 #include <QVector>
 #include <QString>
+#include <QTimer>
 #include "ros/ros.h"
 #include "master_msgs_iele3338/AckService.h"
 #include "master_msgs_iele3338/EndService.h"
@@ -59,6 +60,8 @@ private:
   ros::Subscriber covSub; 
   master_msgs_iele3338::StartService srv;
   int groupNumber, password;
+  bool readyReceivePassword;
+  QTimer *passwordTimer;
   
 signals:
   void ackServiceSignal(int groupNumber, QString address);
@@ -69,6 +72,7 @@ signals:
   
 private slots:
   void startServiceSlot(geometry_msgs::Pose startPoint, geometry_msgs::Pose goalPoint, int numberObstacles, QVector<master_msgs_iele3338::Obstacle> *obstacles);
+  void passwordTimerSlot();
 };
 
 #endif // ROS_THREAD_H
